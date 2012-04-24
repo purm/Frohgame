@@ -1,26 +1,6 @@
-﻿<Properties>
+﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="frohgame_test\Main.cs">
-    <Files>
-      <File FileName="frohgame\Logger.cs" Line="25" Column="1" />
-      <File FileName="d:\Projekte\frohgame\Frohgame\Core\FrohgameSession.cs" Line="48" Column="38" />
-      <File FileName="d:\Projekte\frohgame\Frohgame\Http\HttpHandler.cs" Line="180" Column="51" />
-      <File FileName="frohgame_test\Main.cs" Line="16" Column="26" />
-    </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
-          <Node name="frohgame" expanded="True" />
-          <Node name="frohgame_test" expanded="True">
-            <Node name="References" expanded="True" />
-          </Node>
-        </State>
-      </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
-      </Pad>
-    </Pads>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
