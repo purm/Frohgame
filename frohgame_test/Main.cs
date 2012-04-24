@@ -11,7 +11,7 @@ namespace frohgame_test
 		public static void Main (string[] args)
 		{
 			//SCHROTT, nicht nachmachen :D
-
+			//Ja NIEMALS
             System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
             xmlDoc.Load("AccountSchrott.xml");
             System.Xml.XmlNode accNode = xmlDoc.SelectSingleNode("//account[@name]");
