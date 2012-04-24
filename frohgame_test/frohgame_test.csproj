@@ -30,9 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="frohgame">
-      <HintPath>..\Frohgame\bin\Debug\frohgame.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\Frohgame\bin\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -43,4 +40,10 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\frohgame\frohgame.csproj">
+      <Project>{8A186E5D-3B6E-4823-BC41-1A7D58EBBB6D}</Project>
+      <Name>frohgame</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

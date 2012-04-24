@@ -5,14 +5,12 @@
       <File FileName="frohgame\Logger.cs" Line="25" Column="1" />
       <File FileName="d:\Projekte\frohgame\Frohgame\Core\FrohgameSession.cs" Line="48" Column="38" />
       <File FileName="d:\Projekte\frohgame\Frohgame\Http\HttpHandler.cs" Line="180" Column="51" />
-      <File FileName="frohgame_test\Main.cs" Line="16" Column="80" />
+      <File FileName="frohgame_test\Main.cs" Line="16" Column="26" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="frohgame" expanded="True" selected="True">
-            <Node name="Http" expanded="True" />
-          </Node>
+        <State expanded="True" selected="True">
+          <Node name="frohgame" expanded="True" />
           <Node name="frohgame_test" expanded="True">
             <Node name="References" expanded="True" />
           </Node>
