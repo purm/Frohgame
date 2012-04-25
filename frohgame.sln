@@ -1,26 +1,26 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "frohgame", "frohgame\frohgame.csproj", "{8A186E5D-3B6E-4823-BC41-1A7D58EBBB6D}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrohgameTestApp", "FrohgameTestApp\FrohgameTestApp.csproj", "{7A136F63-6F75-4134-AADE-C5C14E3E5C0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "frohgame_test", "frohgame_test\frohgame_test.csproj", "{A125F2F3-4325-41B2-9B71-0BB172EE9D44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frohgame", "Frohgame\Frohgame.csproj", "{5F9E5B5B-B91B-42A4-BBF8-0DB96969E6B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8A186E5D-3B6E-4823-BC41-1A7D58EBBB6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A186E5D-3B6E-4823-BC41-1A7D58EBBB6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A186E5D-3B6E-4823-BC41-1A7D58EBBB6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A186E5D-3B6E-4823-BC41-1A7D58EBBB6D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A125F2F3-4325-41B2-9B71-0BB172EE9D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A125F2F3-4325-41B2-9B71-0BB172EE9D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A125F2F3-4325-41B2-9B71-0BB172EE9D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A125F2F3-4325-41B2-9B71-0BB172EE9D44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F9E5B5B-B91B-42A4-BBF8-0DB96969E6B3}.Debug|x86.ActiveCfg = Debug|x86
+		{5F9E5B5B-B91B-42A4-BBF8-0DB96969E6B3}.Debug|x86.Build.0 = Debug|x86
+		{5F9E5B5B-B91B-42A4-BBF8-0DB96969E6B3}.Release|x86.ActiveCfg = Release|x86
+		{5F9E5B5B-B91B-42A4-BBF8-0DB96969E6B3}.Release|x86.Build.0 = Release|x86
+		{7A136F63-6F75-4134-AADE-C5C14E3E5C0C}.Debug|x86.ActiveCfg = Debug|x86
+		{7A136F63-6F75-4134-AADE-C5C14E3E5C0C}.Debug|x86.Build.0 = Debug|x86
+		{7A136F63-6F75-4134-AADE-C5C14E3E5C0C}.Release|x86.ActiveCfg = Release|x86
+		{7A136F63-6F75-4134-AADE-C5C14E3E5C0C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = frohgame_test\frohgame_test.csproj
+		StartupItem = FrohgameTestApp\FrohgameTestApp.csproj
 	EndGlobalSection
 EndGlobal
