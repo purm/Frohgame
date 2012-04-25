@@ -64,6 +64,7 @@ namespace FROHGAME.Core
 		#region Berechnunge für Resourcen Bauzeit 
 		
 		
+		
 		#endregion
 		
 	}
