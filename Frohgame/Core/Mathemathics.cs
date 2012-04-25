@@ -56,6 +56,14 @@ namespace FROHGAME.Core
 			return TimeSpan.FromHours (timeInHours);
 		}
 		
+		
+		
+		#endregion
+		
+		
+		#region Berechnunge für Resourcen Bauzeit 
+		
+		
 		#endregion
 		
 	}
