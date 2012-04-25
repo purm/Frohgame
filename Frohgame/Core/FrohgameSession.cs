@@ -473,6 +473,7 @@ namespace FROHGAME.Core {
 
                 foreach (HtmlAgilityPack.HtmlNode planetNode in planetNodes) {
                     ret.Add(new Planet(planetNode, _stringManager, Logger));
+					Console.WriteLine ("TEST: " + planetNode);
                 }
 
                 return ret;

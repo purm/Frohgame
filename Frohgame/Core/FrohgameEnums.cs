@@ -5,7 +5,7 @@ using System.Text;
 
 /*
  * 
- * Author(s): Purm
+ * Author(s): Purm & cannap
  * Don't blame for stupid names!
  * 
  */
@@ -36,6 +36,23 @@ namespace FROHGAME.Core {
         NaniFactory = 15,
         TerraFormer = 33
     }
+	
+	public enum Military { 
+		LightFighter = 204,
+		HeavyFighter = 205,
+		Cruieser = 206,
+		Battleship = 207,
+		Battlecruiser = 215,
+		Bomber = 211,
+		Destroyer = 213,
+		Deathstar = 214,
+		SmallCargoShip = 202,
+		LargeCargoShip = 203,
+		ColonyShip = 208,
+		Recycler = 209, 
+		EspionageProbe = 210,
+		SolarSatellite = 212	
+	}
 
     public enum IndexPages {
         Overview,
