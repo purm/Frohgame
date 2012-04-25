@@ -7,6 +7,8 @@ namespace FROHGAME.Core
 {
 	static public class Mathemathics
 	{
+		
+		#region Berechnung für genug Ressourcen zum bau
 		/// <summary>
 		/// Berechnet die Zeit die benötigt werden um genug Ressourcen zu prduzieren
 		/// </summary>
@@ -53,6 +55,8 @@ namespace FROHGAME.Core
 			double timeInHours = (double)((double)NeededRes - (double)CurrentRes) / (double)ResPerHour;
 			return TimeSpan.FromHours (timeInHours);
 		}
-
+		
+		#endregion
+		
 	}
 }
