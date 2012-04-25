@@ -18,7 +18,7 @@ namespace FROHGAME.Core
 	{
         #region Private Fields
 
-		StringManager _stringManager;
+		StringManager _stringManager;//test
 
         #endregion
 
