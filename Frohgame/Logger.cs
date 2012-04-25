@@ -10,33 +10,36 @@ using System.Diagnostics;
  * 
  */
 
-namespace FROHGAME {
-    /// <summary>
-    /// Loggt interne Ereignisse
-    /// </summary>
-    public class Logger {
+namespace FROHGAME
+{
+	/// <summary>
+	/// Loggt interne Ereignisse
+	/// </summary>
+	public class Logger
+	{
         #region Delegates
 
-        public delegate void OnLoggedStringDelegate(FROHGAME.Core.LoggingCategories category, string log);
+		public delegate void OnLoggedStringDelegate (FROHGAME.Core.LoggingCategories category,string log);
 
         #endregion
 
         #region Events
 
-        /// <summary>
-        /// Wird ausgelöst sobald etwas (intern) geloggt wird
-        /// </summary>
-        public event OnLoggedStringDelegate OnStringLogged;
+		/// <summary>
+		/// Wird ausgelöst sobald etwas (intern) geloggt wird
+		/// </summary>
+		public event OnLoggedStringDelegate OnStringLogged;
 
         #endregion            
 
         #region Internal Methods
 
-        internal void Log(FROHGAME.Core.LoggingCategories category, string log) {
-            if (OnStringLogged != null)
-                OnStringLogged(category, log);
-        }
+		internal void Log (FROHGAME.Core.LoggingCategories category, string log)
+		{
+			if (OnStringLogged != null)
+				OnStringLogged (category, log);
+		}
 
         #endregion
-    }
+	}
 }

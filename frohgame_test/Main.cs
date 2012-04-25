@@ -14,7 +14,7 @@ namespace frohgame_test
 			//SCHROTT, nicht nachmachen :D
 			//Ja NIEMALS
 			
-			string path = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\AccountSchrott.xml";
+			string path = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly ().Location) + @"\AccountSchrott.xml";
 			if (!File.Exists (path)) {
 				string XmlText = (
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -23,7 +23,7 @@ namespace frohgame_test
                 "</accounts>");   
 				File.WriteAllText (path, XmlText);
 				Console.WriteLine ("Bitte zuerst deine " + path + " bearbeiten! Drücke eine Taste zum fortfahren...");
-				Console.ReadKey();
+				Console.ReadKey ();
 			}
 			
 			System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument ();
