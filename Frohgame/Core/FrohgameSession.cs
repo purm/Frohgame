@@ -23,7 +23,10 @@ namespace FROHGAME.Core
         #endregion
 
         #region Properties
-
+		
+		
+		public Frohgame.Calculator myCalculator = new Frohgame.Calculator();
+		
 		HttpHandler _httpHandler = new HttpHandler ("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0");
 		/// <summary>
 		/// Http-Handler, zum abbonieren des Navigate Events
