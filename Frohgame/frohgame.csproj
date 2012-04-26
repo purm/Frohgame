@@ -51,6 +51,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="StringManager.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Core\Calculator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -14,9 +14,9 @@ namespace FrohgameTestApp
 			string path = Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly ().Location) + @"\AccountSchrott.xml";
 			if (!File.Exists (path)) {
 				string XmlText = (
-				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<accounts>" + 
-                "<account name=\"UserName\" password=\"Password\" server=\"uni###.ogame.de\" />" +
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + Environment.NewLine + 
+                "<accounts>" + Environment.NewLine + 
+                "<account name=\"UserName\" password=\"Password\" server=\"uni###.ogame.de\" />" + Environment.NewLine + 
                 "</accounts>");   
 				File.WriteAllText (path, XmlText);
 				Console.WriteLine ("Bitte zuerst deine " + path + " bearbeiten! Drücke eine Taste zum fortfahren...");
@@ -57,7 +57,7 @@ namespace FrohgameTestApp
                 session.Metal,
                 session.Crystal,
                 session.Deuterium,
-                389424, 0, 0,
+                2000, 0, 0,
                 session.MetalPerHour,
                 session.CrystalPerHour,
                 session.DeuteriumPerHour).ToString ();

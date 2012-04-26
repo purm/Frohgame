@@ -1,16 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="d:\Projekte\Frohgame\Frohgame\Core\FrohgameSession.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FrohgameTestApp\Main.cs">
     <Files>
-      <File FileName="FrohgameTestApp\Main.cs" Line="5" Column="17" />
-      <File FileName="d:\Projekte\Frohgame\Frohgame\Core\FrohgameSession.cs" Line="19" Column="31" />
+      <File FileName="FrohgameTestApp\Main.cs" Line="60" Column="21" />
+      <File FileName="d:\Projekte\Frohgame\Frohgame\Core\FrohgameSession.cs" Line="298" Column="17" />
+      <File FileName="Frohgame\Core\Planet.cs" Line="1" Column="14" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Frohgame" expanded="True" />
+          <Node name="Frohgame" expanded="True">
+            <Node name="Core" expanded="True" />
+          </Node>
           <Node name="FrohgameTestApp" expanded="True">
-            <Node name="References" selected="True" />
+            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>
