@@ -34,9 +34,12 @@ namespace FrohgameTestApp
 			session.Logger.OnStringLogged += new FROHGAME.Logger.OnLoggedStringDelegate (Logger_OnStringLogged);
 			session.HttpHandler.OnNavigating += new FROHGAME.Http.HttpHandler.OnNavigatingDelegate (HttpHandler_OnNavigating);
 			session.HttpHandler.OnNavigated += new FROHGAME.Http.HttpHandler.OnNavigatedDelegate (HttpHandler_OnNavigated);
-
+			
+			
+			session.myCalculator.CalculateCosts((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
+			Console.ReadKey ();
 			session.Login ();
-session.myCalculator.CalculateCosts((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
+
 			string str = (
                 "METALL: " + session.Metal + " - " + session.MetalPerHour + "/h" +
                 " - KRISTALL: " + session.Crystal + " - " + session.CrystalPerHour + "/h" +
