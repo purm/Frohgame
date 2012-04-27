@@ -59,7 +59,7 @@ namespace Frohgame
 			case "Building":
 				Result = ((Metal + Crystal) * 3600) / (2500 * (RoboFabrik - 1 * -1) * Math.Pow (2, NanitFabrik));
 				Result = Result / UniSpeed;
-				CalculateTime(Result);
+				CalculateTime (Result);
 				break;
 				
 			case "Station":
@@ -91,12 +91,10 @@ namespace Frohgame
 			
 			if (days == 0) { 
 			
-			Console.WriteLine (hours + ":" + min + ":" + sec);
+				Console.WriteLine (hours + ":" + min + ":" + sec);
 			
-			}
-			else
-			{
-				Console.WriteLine (days + " Tage " +hours + ":" + min + ":" + sec);
+			} else {
+				Console.WriteLine (days + " Tage " + hours + ":" + min + ":" + sec);
 			}
 			return 0;				
 		}
