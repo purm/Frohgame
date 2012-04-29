@@ -95,6 +95,7 @@ namespace Frohgame
 			}
 			
 			return  0;
+		
 		}
 		
 		public TimeSpan CalculateTime (double i)
