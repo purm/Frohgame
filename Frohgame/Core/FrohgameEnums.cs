@@ -74,6 +74,12 @@ namespace FROHGAME.Core {
         NavigationAction,
         Combat
     }
+	
+	public enum ElementTypes {
+		Building,
+		Ship,
+		Research
+	}
 
     #endregion
 }
