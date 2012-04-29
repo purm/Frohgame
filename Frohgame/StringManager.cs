@@ -19,7 +19,25 @@ namespace FROHGAME
 	{
 
         #region Properties
-
+		
+		/// <summary>
+		/// Xpath zum auslesen der Gebäude/Forschungen
+		/// </summary>
+		internal string BuildingResearchXpath {
+			get {
+				return @"//div[@class='buildingimg']/a[@ref]";	
+			}
+		}
+		
+		/// <summary>
+		/// Xpath zum auslesen der Gebäude/Forschungs Level
+		/// </summary>
+		internal string BuildingResearchLevelXPath {
+			get {
+				return @"/span[@class='ecke']//span[@class='level']";	
+			}
+		}
+		
 		/// <summary>
 		/// Regex zum auslesen der 'Ogame'-Version aus den Metadaten
 		/// </summary>
@@ -116,7 +134,7 @@ namespace FROHGAME
 		}
 
         #region  Ressourcen des aktuellen Planeten XPath & Regex
-
+		
 		/// <summary>
 		/// XPath zum auslesen des Metalls -> InnerText
 		/// </summary>
