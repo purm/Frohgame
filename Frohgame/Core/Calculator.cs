@@ -35,18 +35,6 @@ namespace Frohgame
 			);
 		}
 		
-		/// <summary>
-		/// Calculates the costs.
-		/// </summary>
-		/// <returns>
-		/// The costs.
-		/// </returns>
-		/// <param name='element'>
-		/// Gebäude oder Def sowie Fleet
-		/// </param>
-		/// <param name='NextLevel'>
-		/// Das nächste level oder die Anazahl der Flug oder Def Objecte.
-		/// </param>
 		public double CalculateCosts (int element, int NextLevel)
 		{
 			ObjectOffset type = Type [element];
