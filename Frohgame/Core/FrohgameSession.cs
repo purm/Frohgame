@@ -19,11 +19,67 @@ namespace FROHGAME.Core
         #region Private Fields
 
 		StringManager _stringManager;//test
-
+		
         #endregion
 
         #region Properties
 		
+		/// <summary>
+		/// Liest die Level der Ressourcen-Gebäude aus.
+		/// Funktioniert NUR wenn die LastResult = Resoucenpage
+		/// </summary>
+		public Dictionary<SupplyBuildings, int> SupplyBuildingLevels {
+			get {
+				Dictionary<SupplyBuildings, int> buildingLevels = new Dictionary<SupplyBuildings, int>();
+				
+				HtmlAgilityPack.HtmlNodeCollection col = HtmlParser.DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
+				
+				foreach(HtmlAgilityPack.HtmlNode building in col) {
+					int type = Convert.ToInt32(building.Attributes["ref"].Value);
+					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					//int levelValue = Convert.ToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					switch(type) {
+					case (int)SupplyBuildings.CrystalBox:
+						buildingLevels.Add(SupplyBuildings.CrystalBox, level);
+						break;
+					case (int)SupplyBuildings.Crystalmine:
+						buildingLevels.Add(SupplyBuildings.Crystalmine, level);
+						break;
+					case (int)SupplyBuildings.DeuteriumBox:
+						buildingLevels.Add(SupplyBuildings.DeuteriumBox, level);
+						break;
+					case (int)SupplyBuildings.DeuteriumSynthesizer:
+						buildingLevels.Add(SupplyBuildings.DeuteriumSynthesizer, level);
+						break;
+					case (int)SupplyBuildings.FusionPowerStation:
+						buildingLevels.Add(SupplyBuildings.FusionPowerStation, level);
+						break;
+					case (int)SupplyBuildings.HiddenCrystalBox:
+						buildingLevels.Add(SupplyBuildings.HiddenCrystalBox, level);
+						break;
+					case (int)SupplyBuildings.HiddenDeuteriumBox:
+						buildingLevels.Add(SupplyBuildings.HiddenDeuteriumBox, level);
+						break;
+					case (int)SupplyBuildings.HiddenMetalBox:
+						buildingLevels.Add(SupplyBuildings.HiddenMetalBox, level);
+						break;
+					case (int)SupplyBuildings.MetalBox:
+						buildingLevels.Add(SupplyBuildings.MetalBox, level);
+						break;
+					case (int)SupplyBuildings.Metalmine:
+						buildingLevels.Add(SupplyBuildings.Metalmine, level);
+						break;
+					case (int)SupplyBuildings.SolarPowerPlant:
+						buildingLevels.Add(SupplyBuildings.SolarPowerPlant, level);
+						break;
+					default: 
+						break;
+					}
+				}
+				
+				return buildingLevels;
+			}
+		}
 		
 		public Frohgame.Calculator myCalculator = new Frohgame.Calculator();
 		
@@ -476,6 +532,7 @@ namespace FROHGAME.Core
 			Logger.Log (LoggingCategories.Parse, "GetDeuteriumFromAjax: " + Result.ToString ());
 			return Result;
 		}
+		
         #endregion
 
         #region Planet Switcher
