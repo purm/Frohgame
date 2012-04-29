@@ -63,10 +63,10 @@ namespace FROHGAME
 			
 			CalculatorResult res = new CalculatorResult();
 			
-			res.Crystal = Crystal;
-			res.Metal = Metal;
-			res.Deuterium = Deuterium;
-			res.Energy = Energy;
+			res.Crystal = (int)Crystal;
+			res.Metal = (int)Metal;
+			res.Deuterium = (int)Deuterium;
+			res.Energy = (int)Energy;
 			
 			switch (offset.Type) {
 			case FROHGAME.Core.ElementTypes.Building: // Stations & Resourcen- Buildings
