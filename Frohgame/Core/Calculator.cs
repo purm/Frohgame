@@ -81,7 +81,7 @@ namespace Frohgame
 				CalculateTime (Result);
 				break;	
 			}
-			
+
 			return  0;
 		
 		}
