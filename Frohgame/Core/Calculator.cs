@@ -13,6 +13,13 @@ namespace FROHGAME
 		public FROHGAME.Core.ElementTypes Type;
 	}
 	
+	public class CalculatorResult {
+		public int Metal;
+		public int Crystal;
+		public int Deuterium;
+		public TimeSpan Duration;
+	}
+	
 	public class Calculator
 	{
 		Dictionary<int, ObjectOffset> Offsets = new Dictionary<int, ObjectOffset> ();
@@ -33,7 +40,7 @@ namespace FROHGAME
 			);
 		}
 		
-		public double CalculateCosts (int element, int NextLevel)
+		public CalculatorResult CalculateCosts (int element, int NextLevel)
 		{
 			ObjectOffset offset = Offsets [element];
 			
@@ -53,12 +60,14 @@ namespace FROHGAME
 			
 			//Console.WriteLine ("Benötigte Ressourcen für: " + type.Name + " Metal: " + Metal + " Kristall: " + Crystal + " auf Stufe: " + NextLevel);		
 			
+			CalculatorResult res = new CalculatorResult();
+			
 			switch (offset.Type) {
 			case FROHGAME.Core.ElementTypes.Building: // Stations & Resourcen- Buildings
 				
 				Result = ((Metal + Crystal) * 3600) / (2500 * (RoboFabrik - 1 * -1) * Math.Pow (2, NanitFabrik));
 				Result = Result / UniSpeed;
-				CalculateTime (Result);
+				res.Duration = TimeSpan.FromSeconds(Result);
 				break;
 						
 			case FROHGAME.Core.ElementTypes.Research: //Forschung 
@@ -68,7 +77,7 @@ namespace FROHGAME
 					Result = Result * 0.75;
 				}	
 				Result = Result / UniSpeed;
-				CalculateTime (Result);
+				res.Duration = TimeSpan.FromSeconds(Result);
 				break;
 				
 			case FROHGAME.Core.ElementTypes.Ship: //Schiffe 
@@ -76,25 +85,15 @@ namespace FROHGAME
 				Result = Math.Floor ((Metal + Crystal) * 3600) / (2500 * (Werft - 1 * -1) * Math.Pow (2, NanitFabrik)); 
 				Result = Result * NextLevel; //Nextlevel ist auch die Anzahl der Elemente falls es ein Flug oder Def Object ist
 				Result = Result / UniSpeed;
-				CalculateTime (Result);
+				res.Duration = TimeSpan.FromSeconds(Result);
 				break;	
 				
 			default:
 				throw new ArgumentException("ungültiger parameter", "element");
 			}
 
-			return  0;
+			return res;
 		
-		}
-		
-		public TimeSpan CalculateTime (double i)
-		{
-			TimeSpan span = TimeSpan.FromSeconds (i);
-			
-			//TODO: folgende linie entfernen
-			Console.WriteLine (span.Days + " Tage " + span.Hours + ":" + span.Minutes + ":" + span.Seconds);
-			
-			return span;				
 		}
 	}
 } 
