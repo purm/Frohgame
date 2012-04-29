@@ -161,7 +161,7 @@ namespace FROHGAME.Core
 		/// </summary>
 		public string Version {
 			get {
-				string version = Utils.SimpleRegex (_lastResult.ResponseContent, _stringManager.VersionRegex);
+				string version = HtmlParser.DocumentNode.SelectSingleNode(_stringManager.VersionRegex).Attributes["content"].Value;
 				Logger.Log (LoggingCategories.Parse, "Version: " + version);
 				return version;
 			}

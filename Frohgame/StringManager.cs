@@ -43,7 +43,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string VersionRegex {
 			get {
-				return "<meta name=\"ogame-version\" content=\"([^\"]*)\"/>";
+				return "//meta[@name='ogame-version']";
 			}
 		}
 
