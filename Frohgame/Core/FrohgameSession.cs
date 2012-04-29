@@ -36,7 +36,7 @@ namespace FROHGAME.Core
 				
 				foreach(HtmlAgilityPack.HtmlNode building in col) {
 					int type = Convert.ToInt32(building.Attributes["ref"].Value);
-					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(".//span[@class='level']").InnerText);
+					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
 					//int levelValue = Convert.ToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
 					switch(type) {
 					case (int)SupplyBuildings.CrystalBox:

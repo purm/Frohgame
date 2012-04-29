@@ -34,7 +34,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string BuildingResearchLevelXPath {
 			get {
-				return @"/span[@class='ecke']//span[@class='level']";	
+				return @".//span[@class='level']";	
 			}
 		}
 		
