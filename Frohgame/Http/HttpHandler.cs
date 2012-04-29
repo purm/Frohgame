@@ -14,6 +14,7 @@ using System.IO.Compression;
 
 namespace FROHGAME.Http
 {
+	[Serializable()]
 	public class HttpHandler
 	{
         #region Delegates

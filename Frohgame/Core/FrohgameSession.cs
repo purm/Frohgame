@@ -14,6 +14,7 @@ using System.Xml.XPath;
 
 namespace FROHGAME.Core
 {
+	[Serializable()]
 	public class FrohgameSession
 	{
         #region Private Fields
@@ -100,14 +101,22 @@ namespace FROHGAME.Core
 			get { return _logger; }
 			set { _logger = value; }
 		}
-
-		HtmlAgilityPack.HtmlDocument htmlParser = new HtmlAgilityPack.HtmlDocument ();
+		
+		[NonSerialized()]
+		HtmlAgilityPack.HtmlDocument _htmlParser = new HtmlAgilityPack.HtmlDocument ();
 		/// <summary>
 		/// Zum Html parsen
 		/// </summary>
 		public HtmlAgilityPack.HtmlDocument HtmlParser {
-			get { return htmlParser; }
-			set { htmlParser = value; }
+			get { 
+				if(_htmlParser == null) {
+					_htmlParser = new HtmlAgilityPack.HtmlDocument();
+					_htmlParser.LoadHtml(this._lastResult.ResponseContent);
+				}
+
+					return _htmlParser; 
+			}
+			set { _htmlParser = value; }
 		}
 
 		HttpResult __lastResult;
@@ -122,7 +131,7 @@ namespace FROHGAME.Core
 			set {
 				this.__lastResult = value;
 
-				htmlParser.LoadHtml (value.ResponseContent);
+				_htmlParser.LoadHtml (value.ResponseContent);
 			}
 		}
 		/// <summary>

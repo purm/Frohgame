@@ -16,6 +16,8 @@ namespace FROHGAME
 	/// <summary>
 	/// Loggt interne Ereignisse
 	/// </summary>
+	//
+	[Serializable()]
 	public class Logger
 	{
         #region Delegates

@@ -14,6 +14,7 @@ namespace FROHGAME.Core
 	/// <summary>
 	/// Stellt die Position eines Planeten dar
 	/// </summary>
+	[Serializable()]
 	public class PlanetPosition
 	{
 		int _place;
@@ -47,6 +48,7 @@ namespace FROHGAME.Core
 	/// <summary>
 	/// Stellt einen Planeten dar
 	/// </summary>
+	[Serializable()]
 	public class Planet
 	{
 		/// <summary>

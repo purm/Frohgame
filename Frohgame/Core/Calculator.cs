@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace FROHGAME
 {
+	[Serializable()]
 	public class ObjectOffset
 	{
 		public double Factor;
@@ -13,6 +14,7 @@ namespace FROHGAME
 		public FROHGAME.Core.ElementTypes Type;
 	}
 	
+	[Serializable()]
 	public class CalculatorResult {
 		public int Metal;
 		public int Crystal;
@@ -21,6 +23,7 @@ namespace FROHGAME
 		public TimeSpan Duration;
 	}
 	
+	[Serializable()]
 	public class Calculator
 	{
 		Dictionary<int, ObjectOffset> Offsets = new Dictionary<int, ObjectOffset> ();

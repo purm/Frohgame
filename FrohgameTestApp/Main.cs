@@ -1,11 +1,27 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace FrohgameTestApp
 {
 	class MainClass
 	{
+		public static void SerializeObject(object obj, string path) {
+			FileStream stream =  new FileStream(path, FileMode.Create);
+			BinaryFormatter formatter =  new BinaryFormatter();
+			formatter.Serialize(stream, obj);
+			stream.Close();
+		}
+		
+		public static object DeserializeObject(string path) {
+			FileStream stream = new FileStream(path, FileMode.Open);
+			BinaryFormatter formatter =  new BinaryFormatter();
+			object obj = formatter.Deserialize(stream);
+			stream.Close();
+			return obj;
+		}
+		
 		public static void Main (string[] args)
 		{
 			//SCHROTT, nicht nachmachen :D
@@ -37,9 +53,20 @@ namespace FrohgameTestApp
 			
 			
 			session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
-			Console.ReadKey ();
-			session.Login ();
-
+			
+			if(File.Exists("session.dat")) {
+				Console.WriteLine("Session von Datei laden? (Yes/No)");
+				if(Console.ReadLine().ToUpper() == "YES") {
+					session = (FROHGAME.Core.FrohgameSession)DeserializeObject("session.dat");	
+				}
+				else
+					session.Login ();
+			}
+			else
+				session.Login ();
+			
+			Console.WriteLine("VERSION: " + session.Version);
+			
 			string str = (
                 "METALL: " + session.Metal + " - " + session.MetalPerHour + "/h" +
                 " - KRISTALL: " + session.Crystal + " - " + session.CrystalPerHour + "/h" +
@@ -76,7 +103,9 @@ namespace FrohgameTestApp
 			
 			Console.WriteLine("Metallmine level: " + levels[FROHGAME.Core.SupplyBuildings.Metalmine]);
 			
-			Console.ReadKey ();
+			Console.ReadKey();
+			
+			SerializeObject(session, "session.dat");
 		}
 		static void HttpHandler_OnNavigating (string targetUrl, string post)
 		{

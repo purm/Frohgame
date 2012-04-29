@@ -15,6 +15,7 @@ namespace FROHGAME
 	/// <summary>
 	/// Stellt eine Reihe von Regex & Url Konstaten dar, sodass nach einem Ogame-Update nur diese Datei aktualisiert werden muss
 	/// </summary>
+	[Serializable()]
 	public class StringManager
 	{
 

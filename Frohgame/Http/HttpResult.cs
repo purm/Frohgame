@@ -12,6 +12,7 @@ using System.Net;
 
 namespace FROHGAME.Http
 {
+	[Serializable()]
 	public class HttpResult
 	{
         #region Properties
