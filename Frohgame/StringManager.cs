@@ -252,7 +252,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string PlanetListXPath {
 			get {
-				return "//div[@id='myWorlds']/div[@class='smallplanet']";
+				return "//div[@class='smallplanet']";
 			}
 		}
 
@@ -261,7 +261,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string PlanetNameXPath {
 			get {
-				return "//span[@class='planet-name']";
+				return ".//span[@class='planet-name']";
 			}
 		}
 
@@ -270,7 +270,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string PlanetCoordsXPath {
 			get {
-				return "//span[@class='planet-koords']";
+				return ".//span[@class='planet-koords']";
 			}
 		}
 
@@ -288,7 +288,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string PlanetLinkXPath {
 			get {
-				return "//a[@class='planetlink  tipsStandard']";
+				return ".//a";
 			}
 		}
 
