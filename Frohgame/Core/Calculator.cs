@@ -35,6 +35,18 @@ namespace Frohgame
 			);
 		}
 		
+		/// <summary>
+		/// Calculates the costs.
+		/// </summary>
+		/// <returns>
+		/// The costs.
+		/// </returns>
+		/// <param name='element'>
+		/// Gebäude oder Def sowie Fleet
+		/// </param>
+		/// <param name='NextLevel'>
+		/// Das nächste level oder die Anazahl der Flug oder Def Objecte.
+		/// </param>
 		public double CalculateCosts (int element, int NextLevel)
 		{
 			ObjectOffset type = Type [element];
@@ -42,9 +54,10 @@ namespace Frohgame
 			// Müssen vorher ausgelesen werden!
 			int RoboFabrik = 0; 
 			int NanitFabrik = 0;
+			bool Technocrat = false; //KP
 			int UniSpeed = 1; // 1 Standard 3 = Speeduni 
-			double Result; // Speicher immer das aktuelle resultat
-			
+			double Result;
+			int Werft = 0;
 			//Berechne die bentötigten Ressourcen Funktioniert!
 			double Metal = Math.Floor (type.Metal * Math.Pow (type.Factor, NextLevel - 1));
 			double Crystal = Math.Floor (type.Crystal * Math.Pow (type.Factor, NextLevel - 1));
@@ -56,47 +69,42 @@ namespace Frohgame
 			
 			switch (type.Art) {
 				
-			case "Building":
+			case "Building": // Gilt auf die station 
+				
 				Result = ((Metal + Crystal) * 3600) / (2500 * (RoboFabrik - 1 * -1) * Math.Pow (2, NanitFabrik));
 				Result = Result / UniSpeed;
 				CalculateTime (Result);
 				break;
+						
+			case "Research": //Forschung 
 				
-			case "Station":
-				
+				Result = ((Metal + Crystal) * 3600) / (1000 * (RoboFabrik - 1 * -1) * Math.Pow (2, NanitFabrik));
+				if (Technocrat) {
+					Result = Result * 0.75;
+				}	
+				Result = Result / UniSpeed;
+				CalculateTime (Result);
 				break;
-					
-			case "Research":
 				
-				break;
-			case "Fleet": 
-				
-				break;
-			default:
-				
+			default:	// Defense & Fleet 
+				Result = Math.Floor ((Metal + Crystal) * 3600) / (2500 * (Werft - 1 * -1) * Math.Pow (2, NanitFabrik)); 
+				Result = Result * NextLevel; //Nextlevel ist auch die Anzahl der Elemente falls es ein Flug oder Def Object ist
+				Result = Result / UniSpeed;
+				CalculateTime (Result);
 				break;	
 			}
 			
 			return  0;
 		}
 		
-		public double CalculateTime (double i)
+		public TimeSpan CalculateTime (double i)
 		{
-			double sec = i % 60;
-			i = Math.Floor (i / 60);        
-			double min = i % 60;
-			i = Math.Floor (i / 60);
-			double hours = i % 24;
-			double days = Math.Floor (i / 24);
+			TimeSpan span = TimeSpan.FromSeconds (i);
 			
-			if (days == 0) { 
+			//TODO: folgende linie entfernen
+			Console.WriteLine (span.Days + " Tage " + span.Hours + ":" + span.Minutes + ":" + span.Seconds);
 			
-				Console.WriteLine (hours + ":" + min + ":" + sec);
-			
-			} else {
-				Console.WriteLine (days + " Tage " + hours + ":" + min + ":" + sec);
-			}
-			return 0;				
+			return span;				
 		}
 	}
 } 
