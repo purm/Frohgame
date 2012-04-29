@@ -17,6 +17,7 @@ namespace FROHGAME
 		public int Metal;
 		public int Crystal;
 		public int Deuterium;
+		public int Energy;
 		public TimeSpan Duration;
 	}
 	
@@ -40,7 +41,7 @@ namespace FROHGAME
 			);
 		}
 		
-		public CalculatorResult CalculateCosts (int element, int NextLevel)
+		public CalculatorResult CalculateNeeds (int element, int NextLevel)
 		{
 			ObjectOffset offset = Offsets [element];
 			
@@ -61,6 +62,11 @@ namespace FROHGAME
 			//Console.WriteLine ("Benötigte Ressourcen für: " + type.Name + " Metal: " + Metal + " Kristall: " + Crystal + " auf Stufe: " + NextLevel);		
 			
 			CalculatorResult res = new CalculatorResult();
+			
+			res.Crystal = Crystal;
+			res.Metal = Metal;
+			res.Deuterium = Deuterium;
+			res.Energy = Energy;
 			
 			switch (offset.Type) {
 			case FROHGAME.Core.ElementTypes.Building: // Stations & Resourcen- Buildings
