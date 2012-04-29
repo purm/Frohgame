@@ -36,7 +36,7 @@ namespace FrohgameTestApp
 			session.HttpHandler.OnNavigated += new FROHGAME.Http.HttpHandler.OnNavigatedDelegate (HttpHandler_OnNavigated);
 			
 			
-			session.Calculator.CalculateCosts((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
+			session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
 			Console.ReadKey ();
 			session.Login ();
 
