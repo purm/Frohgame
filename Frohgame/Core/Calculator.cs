@@ -80,23 +80,14 @@ namespace Frohgame
 			return  0;
 		}
 		
-		public double CalculateTime (double i)
+		public TimeSpan CalculateTime (double i)
 		{
-			double sec = i % 60;
-			i = Math.Floor (i / 60);        
-			double min = i % 60;
-			i = Math.Floor (i / 60);
-			double hours = i % 24;
-			double days = Math.Floor (i / 24);
+			TimeSpan span = TimeSpan.FromSeconds(i);
 			
-			if (days == 0) { 
+			//TODO: folgende linie entfernen
+			Console.WriteLine(span.Days + " Tage " + span.Hours + ":" + span.Minutes + ":" + span.Seconds);
 			
-				Console.WriteLine (hours + ":" + min + ":" + sec);
-			
-			} else {
-				Console.WriteLine (days + " Tage " + hours + ":" + min + ":" + sec);
-			}
-			return 0;				
+			return span;				
 		}
 	}
 } 
