@@ -71,6 +71,11 @@ namespace FrohgameTestApp
 
 			Console.WriteLine ("TIME: " + time);
         
+			session.NagivateToIndexPage(FROHGAME.Core.IndexPages.Resources);
+			System.Collections.Generic.Dictionary<FROHGAME.Core.SupplyBuildings, int> levels = session.SupplyBuildingLevels;
+			
+			Console.WriteLine("Metallmine level: " + levels[FROHGAME.Core.SupplyBuildings.Metalmine]);
+			
 			Console.ReadKey ();
 		}
 		static void HttpHandler_OnNavigating (string targetUrl, string post)
