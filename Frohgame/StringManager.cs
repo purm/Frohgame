@@ -243,7 +243,7 @@ namespace FROHGAME
 		/// </summary>
 		internal string BuildCurLevelXPath {
 			get {
-				return "//span[@class='level']";
+				return ".//span[@class='level']";
 			}
 		}
 
