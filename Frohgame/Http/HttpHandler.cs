@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
 
 /*
  * 
@@ -29,12 +30,14 @@ namespace FROHGAME.Http
 
 		/// <summary>
 		/// Wird ausgelöst sobald eine Navigation stattgefunden hat
-		/// </summary>
+		/// </summary>,
+		[field: NonSerialized]
 		public event OnNavigatedDelegate OnNavigated;
 
 		/// <summary>
 		/// Wird ausgelöst sobald eine Navigation "beginnt"
 		/// </summary>
+		[field: NonSerialized]
 		public event OnNavigatingDelegate OnNavigating;
 
         #endregion
