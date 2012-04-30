@@ -121,7 +121,7 @@ namespace FROHGAME.Core
 			get { 
 				if(_htmlParser == null) {
 					_htmlParser = new HtmlAgilityPack.HtmlDocument();
-					if(this.LastResult.ResponseContent == null) {
+					if(this.LastResult.ResponseContent != null) {
 						_htmlParser.LoadHtml(this.LastResult.ResponseContent);
 					}
 				}
@@ -143,8 +143,8 @@ namespace FROHGAME.Core
 			set {
 				this.__lastResult = value;
 
-				if(this.LastResult.ResponseContent == null) {
-					_htmlParser.LoadHtml(this.LastResult.ResponseContent);
+				if(this.LastResult.ResponseContent != null) {
+					HtmlParser.LoadHtml(this.LastResult.ResponseContent);
 				}
 			}
 		}
