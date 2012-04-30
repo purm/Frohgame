@@ -91,7 +91,7 @@ namespace FROHGAME.Core
 			}
 		}
 		
-		public FROHGAME.Calculator Calculator = new FROHGAME.Calculator();
+		public FROHGAME.Core.Mathemathics.Calculator Calculator = new FROHGAME.Core.Mathemathics.Calculator();
 		
 		HttpHandler _httpHandler = new HttpHandler ("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0");
 		/// <summary>
