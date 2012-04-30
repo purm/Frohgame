@@ -4,12 +4,15 @@ using System.Collections.Generic;
 //Berechnet die Flugdauer, die Lagerkapzität sowie den Verbaucht
 namespace Frohgame
 {
+	
+//todo : duration-time,arrival,return-time,fix,return-flight
+	
 	public class MathFleet
 	{
 		
-		static public Dictionary<int, ObjectOffset> Offsets = new Dictionary<int, ObjectOffset> ();
+		static private Dictionary<int, ObjectOffset> Offsets = new Dictionary<int, ObjectOffset> ();
 		
-		public class ObjectOffset
+		private class ObjectOffset
 		{
 			public int Antrieb;
 			public int Multi;
@@ -24,7 +27,7 @@ namespace Frohgame
 		/// </summary> 
 		/// 	
 
-		private static SetDatas read = new SetDatas ();
+		static private SetDatas read = new SetDatas ();
 		public class SetDatas
 		{ 
 			
@@ -45,11 +48,11 @@ namespace Frohgame
 		}
 
 		[Serializable()]
-		public class FleetData
+		private class FleetData
 		{
 			
 		
-			public FleetData ()
+			private FleetData ()
 			{
 				//Todo weitere Daten hinzufügen
 				Offsets.Add (
@@ -68,7 +71,7 @@ namespace Frohgame
 			}
 		}
 		
-		public int Distance ()
+		private int Distance ()
 		{	
 			
 			int dist = 0;
@@ -85,7 +88,7 @@ namespace Frohgame
 			
 		}
 		
-		public double Duration ()
+		private double Duration ()
 		{
 			int SpeedFactor = 1;	
 			if (read.isSpeedFactor) {
@@ -97,12 +100,14 @@ namespace Frohgame
 			return ret;
 		}
 		
+		
+		//Wird aufgerufen und gibt den Verbrauch zurück 
 		public double Consumption ()
 		{
 			double Consumption = 0;
 			int BasicConsumption = 0;
-			int Values;
-			int i;	
+			//int Values;
+			//int i;	
 			
 			int msp = MaxSpeed ();
 			int sp = read.Speed;
@@ -134,7 +139,7 @@ namespace Frohgame
 		//int dis = Distance();
 			
 		//Hier muss die ID der Flotte angeben Like: FROHGAME.Core.Military.LightFighter
-		public int GetSpeed (int element)
+		private int GetSpeed (int element)
 		{ 
 			ObjectOffset offset = Offsets [element];
 			int Speed;
@@ -160,7 +165,7 @@ namespace Frohgame
 			
 		}
 		
-		public int MaxSpeed ()
+		private int MaxSpeed ()
 		{		
 			int ID;
 			int speed;
@@ -177,6 +182,8 @@ namespace Frohgame
 			return msp;
 		}
 		
+		
+		//Wird aufgerufen und gibt den Platz der Flotte zurück 
 		public double Capacity ()
 		{
 			
