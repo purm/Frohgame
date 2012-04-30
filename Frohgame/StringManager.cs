@@ -92,9 +92,9 @@ namespace FROHGAME
 		/// <summary>
 		/// String zum verifizieren, ob der Logout-Link gefunden werden kann
 		/// </summary>
-		internal string LogoutRegex {
+		internal string IsLoggedinXPath {
 			get {
-				return String.Format (@"http://{0}/game/index.php\?page=logout", this._server);
+				return "//meta[@name='ogame-session']";
 			}
 		}
 

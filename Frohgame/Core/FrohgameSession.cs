@@ -28,11 +28,19 @@ namespace FROHGAME.Core
 
         #region Properties
 		
-		public bool Loggedin {
-			get {
-				//TODO: implementieren!
+		public bool IsLoggedIn(bool refresh) {
+			if(refresh)
+				this.LastResult = NagivateToIndexPage(IndexPages.Overview);
+			
+			HtmlAgilityPack.HtmlNode node = HtmlParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
+			if(node == null)
 				return false;
+				
+			if(node.Attributes["content"] == null) {
+				return false;	
 			}
+			
+			return true;
 		}
 		
 		/// <summary>
@@ -382,7 +390,7 @@ namespace FROHGAME.Core
 			this.LastResult = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
 
 			//Nach Logout Link suchen... falls vorhanden => login war erfolgreich, sonst nicht
-			if (!Regex.IsMatch (LastResult.ResponseContent, _stringManager.LogoutRegex))
+			if(!IsLoggedIn(false))
 				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
 
 			Logger.Log (LoggingCategories.NavigationAction, "Login was successfull");
@@ -610,6 +618,9 @@ namespace FROHGAME.Core
 			stream.Close();
 		}
 		
+		/// <summary>
+		/// Lädt eine Session aus einer Datei
+		/// </summary>
 		public static FrohgameSession Deserialize(string path) {
 			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 
