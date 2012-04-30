@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Management;
 using FROHGAME.Core;
 
 /*
@@ -108,6 +109,38 @@ namespace FROHGAME
 			System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding ();
 			return enc.GetString (arr);
 		}
-
+		
+		static public string HardwareID {
+			//from http://www.vcskicks.com/hardware_id.php
+			get {
+				string cpuInfo = string.Empty;
+				ManagementClass mc = new ManagementClass("win32_processor");
+				ManagementObjectCollection moc = mc.GetInstances();
+				
+				foreach (ManagementObject mo in moc)
+				{
+				     if (cpuInfo == "")
+				     {
+				          //Get only the first CPU's ID
+				          cpuInfo = mo.Properties["processorID"].Value.ToString();
+				          break;
+				     }
+				}
+				return cpuInfo;
+			}
+		}
+		
+		/// <summary>
+	    /// Get a substring of the first N characters.
+	    /// </summary>
+	    public static string Truncate(string source, int length)
+	    {
+			//from http://www.dotnetperls.com/truncate
+			if (source.Length > length)
+			{
+			    source = source.Substring(0, length);
+			}
+			return source;
+	    }
 	}
 }

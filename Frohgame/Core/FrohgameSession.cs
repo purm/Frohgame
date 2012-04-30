@@ -7,6 +7,7 @@ using FROHGAME.Http;
 using System.Xml.XPath;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 
 /*
  * 
@@ -588,17 +589,38 @@ namespace FROHGAME.Core
 		/// Dateipfad
 		/// </param>
 		public void Serialize(string path) {
-			FileStream stream =  new FileStream(path, FileMode.Create);
+			FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+			DESCryptoServiceProvider cryptic = new DESCryptoServiceProvider();
+			string hwID = Utils.Truncate(Utils.HardwareID, 8);
+			cryptic.Key = ASCIIEncoding.ASCII.GetBytes(hwID);
+			cryptic.IV = ASCIIEncoding.ASCII.GetBytes(hwID);
+
+			CryptoStream crStream = new CryptoStream(stream,
+   				cryptic.CreateEncryptor(), CryptoStreamMode.Write);
+
 			BinaryFormatter formatter =  new BinaryFormatter();
-			formatter.Serialize(stream, this);
+			formatter.Serialize(crStream, this);
+
+			crStream.Close();
 			stream.Close();
 		}
 		
 		public static FrohgameSession Deserialize(string path) {
-			FileStream stream = new FileStream(path, FileMode.Open);
+			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+			DESCryptoServiceProvider cryptic = new DESCryptoServiceProvider();
+			string hwID = Utils.Truncate(Utils.HardwareID, 8);
+			cryptic.Key = ASCIIEncoding.ASCII.GetBytes(hwID);
+			cryptic.IV = ASCIIEncoding.ASCII.GetBytes(hwID);
+			
+			CryptoStream crStream = new CryptoStream(stream,
+			    cryptic.CreateDecryptor(), CryptoStreamMode.Read);
+			
 			BinaryFormatter formatter =  new BinaryFormatter();
-			object obj = formatter.Deserialize(stream);
+			object obj = formatter.Deserialize(crStream);
+			
 			stream.Close();
+			
 			return (FrohgameSession)obj;
 		}
 		

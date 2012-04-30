@@ -38,6 +38,7 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
