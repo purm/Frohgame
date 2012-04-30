@@ -149,6 +149,7 @@ namespace FROHGAME.Core
 		/// </summary>
 		internal HttpResult LastResult {
 			get { return _lastResult; }
+			set { _lastResult = value; }
 		}
 
 		string _userPassword;
