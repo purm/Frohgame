@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 //Berechnet die Flugdauer, die Lagerkapzität sowie den Verbaucht
 namespace Frohgame
 {
@@ -23,25 +24,26 @@ namespace Frohgame
 		/// </summary> 
 		/// 	
 
-	private static SetDatas read = new SetDatas();
-		 public class SetDatas
+		private static SetDatas read = new SetDatas ();
+		public class SetDatas
 		{ 
 			
-			 public int Verbrennungstriebwerk = 6;
-			 public int Impuls = 0;
-			 public int Hyper = 0;
-			 public bool isSpeedFactor = false;
-			 public int Speed = 100;
+			public int Verbrennungstriebwerk = 6;
+			public int Impuls = 0;
+			public int Hyper = 0;
+			public bool isSpeedFactor = false;
+			public int Speed = 100;
 			//Galaxywerte 
-			 public int StartGalaxy = 7;
-			 public int StartSystem = 22;
-			 public int StartPlanet = 12;
-			 public int TargetGalaxy = 8;
-			 public int TargetSystem = 22;
-			 public int TargetPlanet = 12;
+			public int StartGalaxy = 7;
+			public int StartSystem = 22;
+			public int StartPlanet = 12;
+			public int TargetGalaxy = 8;
+			public int TargetSystem = 22;
+			public int TargetPlanet = 12;
 			//Schiff Counter da wird bisschen Komplizierter als ich dachte
 			public int LightFighterCount = 4;
 		}
+
 		[Serializable()]
 		public class FleetData
 		{
@@ -119,7 +121,7 @@ namespace Frohgame
 				if (ID != 212) {
 					if (offset.Count > 0) { 
 						int shipspeed = GetSpeed (ID);
-						var spd = 35000 / (dur * SpeedFactor - 10) * Math.Sqrt (dist * 10 / shipspeed);
+						double spd = 35000 / (dur * SpeedFactor - 10) * Math.Sqrt (dist * 10 / shipspeed);
 						BasicConsumption = offset.Verbrauch * offset.Count;
 						Consumption += BasicConsumption * dist / 35000 * ((spd / 10) + 1) * ((spd / 10) + 1);
 					}	
@@ -153,9 +155,7 @@ namespace Frohgame
 				Speed1 = Speed2;
 				Speed = Speed1 + Speed1 * stufe * Multi / 100;
 				return Speed;
-				
 			}
-			
 			return 0;
 			
 		}
@@ -163,10 +163,10 @@ namespace Frohgame
 		public int MaxSpeed ()
 		{		
 			int ID;
-					int speed;
+			int speed;
 			int msp = 1000000000;
 			for (ID = 202; ID <= 215; ID++) {
-					ObjectOffset offset = Offsets [ID];
+				ObjectOffset offset = Offsets [ID];
 				if (ID != 212) {  
 					if (offset.Count > 0) { 
 						speed = GetSpeed (ID);
@@ -180,16 +180,16 @@ namespace Frohgame
 		public double Capacity ()
 		{
 			
-		int ID;
-		double capacity1 = 0;
+			int ID;
+			double capacity1 = 0;
 			for (ID = 202; ID <= 215; ID++) {
 				ObjectOffset offset = Offsets [ID];
 				if (ID != 212) {
-					 capacity1 += offset.Count * offset.Platz;
+					capacity1 += offset.Count * offset.Platz;
 				} 
-		capacity1 -= Consumption () - 1;
+				capacity1 -= Consumption () - 1;
 			}
-		return capacity1;
+			return capacity1;
 		
 		}
 		
