@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FROHGAME.Http;
 using System.Xml.XPath;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 /*
  * 
@@ -24,6 +26,13 @@ namespace FROHGAME.Core
         #endregion
 
         #region Properties
+		
+		public bool Loggedin {
+			get {
+				//TODO: implementieren!
+				return false;
+			}
+		}
 		
 		/// <summary>
 		/// Liest die Level der Ressourcen-Gebäude aus.
@@ -371,10 +380,6 @@ namespace FROHGAME.Core
 				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
 
 			Logger.Log (LoggingCategories.NavigationAction, "Login was successfull");
-
-			//@CANNAP: DEIN PLANET AUSLESEN KRAM HAT BEI MIR GECRASHT
-
-			//Todo Prüfen ob ein Gebäude im Bau ist
 		}
 
 		/// <summary>
@@ -573,5 +578,30 @@ namespace FROHGAME.Core
 		}
 
         #endregion
+		
+		#region Serialization
+		
+		/// <summary>
+		/// Speichert die Session
+		/// </summary>
+		/// <param name='path'>
+		/// Dateipfad
+		/// </param>
+		public void Serialize(string path) {
+			FileStream stream =  new FileStream(path, FileMode.Create);
+			BinaryFormatter formatter =  new BinaryFormatter();
+			formatter.Serialize(stream, this);
+			stream.Close();
+		}
+		
+		public static FrohgameSession Deserialize(string path) {
+			FileStream stream = new FileStream(path, FileMode.Open);
+			BinaryFormatter formatter =  new BinaryFormatter();
+			object obj = formatter.Deserialize(stream);
+			stream.Close();
+			return (FrohgameSession)obj;
+		}
+		
+		#endregion
 	}
 }
