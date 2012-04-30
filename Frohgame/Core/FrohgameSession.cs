@@ -121,7 +121,7 @@ namespace FROHGAME.Core
 			get { 
 				if(_htmlParser == null) {
 					_htmlParser = new HtmlAgilityPack.HtmlDocument();
-					_htmlParser.LoadHtml(this._lastResult.ResponseContent);
+					_htmlParser.LoadHtml(this.LastResult.ResponseContent);
 				}
 
 					return _htmlParser; 
@@ -358,7 +358,7 @@ namespace FROHGAME.Core
 		public HttpResult NagivateToIndexPage (IndexPages page)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NagivateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
-			return this._lastResult = HttpHandler.Get (this._stringManager.GetIndexPageUrl (page));
+			return this.LastResult = HttpHandler.Get (this._stringManager.GetIndexPageUrl (page));
 		}
 
 		/// <summary>
@@ -374,7 +374,7 @@ namespace FROHGAME.Core
 
 			//Logindaten senden^^
 			Logger.Log (LoggingCategories.NavigationAction, "Sending Login Data");
-			this._lastResult = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
+			this.LastResult = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
 
 			//Nach Logout Link suchen... falls vorhanden => login war erfolgreich, sonst nicht
 			if (!Regex.IsMatch (LastResult.ResponseContent, _stringManager.LogoutRegex))
@@ -391,7 +391,7 @@ namespace FROHGAME.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this._lastResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
+			if (this.LastResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NagivateToIndexPage (IndexPages.Resources);
 			} else {
@@ -429,7 +429,7 @@ namespace FROHGAME.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this._lastResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
+			if (this.LastResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NagivateToIndexPage (IndexPages.Station);
 			} else {
