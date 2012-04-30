@@ -31,6 +31,8 @@ namespace FROHGAME
 		/// <summary>
 		/// Wird ausgelöst sobald etwas (intern) geloggt wird
 		/// </summary>
+		//
+		[field: NonSerialized]
 		public event OnLoggedStringDelegate OnStringLogged;
 
         #endregion            

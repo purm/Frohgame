@@ -6,22 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace FrohgameTestApp
 {
 	class MainClass
-	{
-		public static void SerializeObject(object obj, string path) {
-			FileStream stream =  new FileStream(path, FileMode.Create);
-			BinaryFormatter formatter =  new BinaryFormatter();
-			formatter.Serialize(stream, obj);
-			stream.Close();
-		}
-		
-		public static object DeserializeObject(string path) {
-			FileStream stream = new FileStream(path, FileMode.Open);
-			BinaryFormatter formatter =  new BinaryFormatter();
-			object obj = formatter.Deserialize(stream);
-			stream.Close();
-			return obj;
-		}
-		
+	{				
 		public static void Main (string[] args)
 		{
 			//SCHROTT, nicht nachmachen :D
@@ -44,26 +29,33 @@ namespace FrohgameTestApp
 			System.Xml.XmlNode accNode = xmlDoc.SelectSingleNode ("//account[@name]");
 			//SCHROTT ENDE
 			
-			FROHGAME.Core.FrohgameSession session = new FROHGAME.Core.FrohgameSession (accNode.Attributes ["name"].Value, accNode.Attributes ["password"].Value, accNode.Attributes ["server"].Value);
-
-			//session.HttpHandler.Proxy = "127.0.0.1:8888";
-			session.Logger.OnStringLogged += new FROHGAME.Logger.OnLoggedStringDelegate (Logger_OnStringLogged);
-			session.HttpHandler.OnNavigating += new FROHGAME.Http.HttpHandler.OnNavigatingDelegate (HttpHandler_OnNavigating);
-			session.HttpHandler.OnNavigated += new FROHGAME.Http.HttpHandler.OnNavigatedDelegate (HttpHandler_OnNavigated);
-			
-			
-			session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
+			FROHGAME.Core.FrohgameSession session = null;
 			
 			if(File.Exists("session.dat")) {
 				Console.WriteLine("Session von Datei laden? (Yes/No)");
 				if(Console.ReadLine().ToUpper() == "YES") {
-					session = (FROHGAME.Core.FrohgameSession)DeserializeObject("session.dat");	
+					session = FROHGAME.Core.FrohgameSession.Deserialize("session.dat");
 				}
-				else
-					session.Login ();
 			}
-			else
-				session.Login ();
+			
+			if(session == null) {
+				session = new FROHGAME.Core.FrohgameSession (accNode.Attributes ["name"].Value, accNode.Attributes ["password"].Value, accNode.Attributes ["server"].Value);	
+			}
+			else {
+				Console.WriteLine("Session erfolgreich deserialisiert");
+			}
+			
+			//session.HttpHandler.Proxy = "127.0.0.1:8888";
+			session.Logger.OnStringLogged += new FROHGAME.Logger.OnLoggedStringDelegate (Logger_OnStringLogged);
+			session.HttpHandler.OnNavigating += new FROHGAME.Http.HttpHandler.OnNavigatingDelegate (HttpHandler_OnNavigating);
+			session.HttpHandler.OnNavigated += new FROHGAME.Http.HttpHandler.OnNavigatedDelegate (HttpHandler_OnNavigated);	
+			
+			//session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
+			
+			//macht natürlich erst sinn, wenn Loggedin fertig implementiert ist!
+			if(!session.Loggedin) {
+				session.Login();
+			}
 			
 			Console.WriteLine("VERSION: " + session.Version);
 			
@@ -105,7 +97,7 @@ namespace FrohgameTestApp
 			
 			Console.ReadKey();
 			
-			SerializeObject(session, "session.dat");
+			session.Serialize("session.dat");
 		}
 		static void HttpHandler_OnNavigating (string targetUrl, string post)
 		{
