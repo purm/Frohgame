@@ -44,18 +44,19 @@
     <Compile Include="Core\FrohgameEnums.cs" />
     <Compile Include="Core\FrohgameExceptions.cs" />
     <Compile Include="Core\FrohgameSession.cs" />
-    <Compile Include="Core\Mathemathics.cs" />
     <Compile Include="Core\Planet.cs" />
     <Compile Include="Http\HttpHandler.cs" />
     <Compile Include="Http\HttpResult.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="StringManager.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Core\Calculator.cs" />
+    <Compile Include="Core\Mathematics\MathRes.cs" />
+    <Compile Include="Core\Mathematics\MathFleet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Core\" />
     <Folder Include="Http\" />
+    <Folder Include="Core\Mathematics\" />
   </ItemGroup>
 </Project>
