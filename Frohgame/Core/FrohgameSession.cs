@@ -526,9 +526,9 @@ namespace FROHGAME.Core
 		/// </summary>
 		/// <param name="planetListID">Die Nummer des Planeten</param>
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
-		public string PlanetChanger (Planet planet)
-		{ //ToDo
-			return "Planetname";
+		public void ChangeToPlanet (IndexPage page, Planet planet)
+		{
+			this.LastResult = this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
 		}
 
         #endregion
