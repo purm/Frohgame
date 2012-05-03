@@ -28,6 +28,15 @@ namespace FROHGAME.Core
 
         #region Properties
 		
+		/// <summary>
+		/// Überprüft ob die session noch gültig ist
+		/// </summary>
+		/// <returns>
+		/// <c>True</c> falls gültig, sonst <c>falsch</c>.
+		/// </returns>
+		/// <param name='refresh'>
+		/// Wenn <c>true</c> wird die Overview Seite neu geladen, sonst wird aus dem cache geladen.
+		/// </param>
 		public bool IsLoggedIn(bool refresh) {
 			if(refresh)
 				this.LastResult = NagivateToIndexPage(IndexPages.Overview);
