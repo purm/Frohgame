@@ -30,11 +30,13 @@ namespace FrohgameTestApp
 			//SCHROTT ENDE
 			
 			FROHGAME.Core.FrohgameSession session = null;
+			bool loadedSessionFromFile = false;
 			
 			if(File.Exists("session.dat")) {
 				Console.WriteLine("Session von Datei laden? (Yes/No)");
 				if(Console.ReadLine().ToUpper() == "YES") {
 					session = FROHGAME.Core.FrohgameSession.Deserialize("session.dat");
+					loadedSessionFromFile = true;
 				}
 			}
 			
@@ -53,8 +55,12 @@ namespace FrohgameTestApp
 			//session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
 			
 			//macht natürlich erst sinn, wenn Loggedin fertig implementiert ist!
-			if(!session.IsLoggedIn(true)) {
-				session.Login();
+			if(loadedSessionFromFile == true) {
+				if(!session.IsLoggedIn(true)) {
+					session.Login();
+				}
+			} else {
+				session.Login();	
 			}
 			
 			Console.WriteLine("VERSION: " + session.Version);
