@@ -136,6 +136,12 @@ namespace FROHGAME
 
         #region  Ressourcen des aktuellen Planeten XPath & Regex
 		
+		internal string CurrentPlanetIdXPath {
+			get {
+				return "//meta[@name='ogame-planet-id']";	
+			}
+		}
+		
 		/// <summary>
 		/// XPath zum auslesen des Metalls -> InnerText
 		/// </summary>

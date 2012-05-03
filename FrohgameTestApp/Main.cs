@@ -66,11 +66,11 @@ namespace FrohgameTestApp
 			Console.WriteLine("VERSION: " + session.Version);
 			
 			string str = (
-                "METALL: " + session.Metal + " - " + session.MetalPerHour + "/h" +
-                " - KRISTALL: " + session.Crystal + " - " + session.CrystalPerHour + "/h" +
-                " - DEUTERIUM: " + session.Deuterium + " - " + session.DeuteriumPerHour + "/h" + 
+                "METALL: " + session.CurrentPlanet.Metal + " - " + session.CurrentPlanet.MetalPerHour + "/h" +
+                " - KRISTALL: " + session.CurrentPlanet.Crystal + " - " + session.CurrentPlanet.CrystalPerHour + "/h" +
+                " - DEUTERIUM: " + session.CurrentPlanet.Deuterium + " - " + session.CurrentPlanet.DeuteriumPerHour + "/h" + 
                 " - DUNKLE MATERIE: " + session.DarkMatter + 
-                " - ENERGIE: " + session.Energy);
+                " - ENERGIE: " + session.CurrentPlanet.Energy);
 
 			Console.ForegroundColor = ConsoleColor.White;
 			Console.WriteLine (str);
@@ -82,13 +82,13 @@ namespace FrohgameTestApp
 
 			//Zeit bis 100.000 Metall:
 			string time = FROHGAME.Core.Mathemathics.CalcMaxTimeForRes (
-                session.Metal,
-                session.Crystal,
-                session.Deuterium,
+                session.CurrentPlanet.Metal,
+                session.CurrentPlanet.Crystal,
+                session.CurrentPlanet.Deuterium,
                 2000, 0, 0,
-                session.MetalPerHour,
-                session.CrystalPerHour,
-                session.DeuteriumPerHour).ToString ();
+                session.CurrentPlanet.MetalPerHour,
+                session.CurrentPlanet.CrystalPerHour,
+                session.CurrentPlanet.DeuteriumPerHour).ToString ();
 
 			//int time = FROHGAME.Core.Mathemathics.CalcTimeForRes(100000, session.Metal, session.MetalPerHour);
 

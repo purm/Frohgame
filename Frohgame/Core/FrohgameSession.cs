@@ -231,7 +231,33 @@ namespace FROHGAME.Core
 				return Result;
 			}
 		}
-
+		
+		/// <summary>
+		/// ID (aus den metadaten) vom aktuellen planeten
+		/// </summary>
+		public int CurrentPlanetId {
+			get {
+				return Utils.StringReplaceToInt32(
+					HtmlParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
+			}
+		}
+		
+		/// <summary>
+		/// Der aktuell angewählte Planet
+		/// </summary>
+		public Planet CurrentPlanet {
+		 	get {
+				int currentPlanetId  = CurrentPlanetId;
+				foreach(Planet p in this.PlanetList) {
+					if(p.Id == currentPlanetId)	{
+						return p;	
+					}
+				}
+				
+				return null;
+			}
+		}
+		
         #endregion
 
         #region Contructors
@@ -336,12 +362,12 @@ namespace FROHGAME.Core
 			int currentLevel = GetBuildingLevelFromAjax (tmpDoc);
 
 			//abgleichen mit aktuellen ressies
-			if (this.Metal < neededMetal) {
+			if (this.CurrentPlanet.Metal < neededMetal) {
 				throw new NotEnoughMetalException ("Nicht genug Metall zum bau von " + building.ToString ());
-			} else if (this.Crystal < neededCrystal) {
-				Mathemathics.CalcMaxTimeForRes (this.Metal, this.Crystal, this.Deuterium, neededMetal, neededCrystal, neededDeuterium, MetalPerHour, CrystalPerHour, DeuteriumPerHour);
+			} else if (this.CurrentPlanet.Crystal < neededCrystal) {
+				Mathemathics.CalcMaxTimeForRes (this.CurrentPlanet.Metal, this.CurrentPlanet.Crystal, this.CurrentPlanet.Deuterium, neededMetal, neededCrystal, neededDeuterium, this.CurrentPlanet.MetalPerHour, this.CurrentPlanet.CrystalPerHour, this.CurrentPlanet.DeuteriumPerHour);
 				throw new NotEnoughCrystalException ("Nicht genug Kristall zum bau von " + building.ToString ());
-			} else if (this.Deuterium < neededDeuterium) {
+			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
 			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Resources), _stringManager.GetUpgradeBuildingSubmitParameter (this.Token, building));
@@ -373,11 +399,12 @@ namespace FROHGAME.Core
 			int currentLevel = GetBuildingLevelFromAjax (tmpDoc);
 
 			//abgleichen mit aktuellen ressies
-			if (this.Metal < neededMetal) {
+			if (this.CurrentPlanet.Metal < neededMetal) {
 				throw new NotEnoughMetalException ("Nicht genug Metall zum bau von " + building.ToString ());
-			} else if (this.Crystal < neededCrystal) {
+			} else if (this.CurrentPlanet.Crystal < neededCrystal) {
+				Mathemathics.CalcMaxTimeForRes (this.CurrentPlanet.Metal, this.CurrentPlanet.Crystal, this.CurrentPlanet.Deuterium, neededMetal, neededCrystal, neededDeuterium, this.CurrentPlanet.MetalPerHour, this.CurrentPlanet.CrystalPerHour, this.CurrentPlanet.DeuteriumPerHour);
 				throw new NotEnoughCrystalException ("Nicht genug Kristall zum bau von " + building.ToString ());
-			} else if (this.Deuterium < neededDeuterium) {
+			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
 			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Station), _stringManager.GetUpgradeBuildingSubmitParameter (this.Token, building));
