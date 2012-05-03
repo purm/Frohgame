@@ -248,7 +248,7 @@ namespace FROHGAME.Core
 		public Planet CurrentPlanet {
 		 	get {
 				int currentPlanetId  = CurrentPlanetId;
-				foreach(Planet p in this.PlanetList) {
+				foreach(Planet p in this.CachedPlanetList) {
 					if(p.Id == currentPlanetId)	{
 						return p;	
 					}
@@ -504,7 +504,18 @@ namespace FROHGAME.Core
         #endregion
 
         #region Planet Switcher
-
+		
+		public List<Planet> _cachedPlanetList = null;
+			
+		public List<Planet> CachedPlanetList {
+			get {
+				if( _cachedPlanetList == null)
+					_cachedPlanetList = PlanetList;
+				
+				return _cachedPlanetList;
+			}
+		}
+		
 		/// <summary>
 		/// Lese Planeten aus und füge Sie in planetList ein 
 		/// </summary>
@@ -526,7 +537,7 @@ namespace FROHGAME.Core
 		/// </summary>
 		/// <param name="planetListID">Die Nummer des Planeten</param>
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
-		public void ChangeToPlanet (IndexPage page, Planet planet)
+		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
 			this.LastResult = this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
 		}
