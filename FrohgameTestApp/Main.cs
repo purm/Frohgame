@@ -97,7 +97,7 @@ namespace FrohgameTestApp
 			Console.WriteLine ("TIME: " + time);
         
 			session.NagivateToIndexPage(Frohgame.Core.IndexPages.Resources);
-			System.Collections.Generic.Dictionary<Frohgame.Core.SupplyBuildings, int> levels = session.SupplyBuildingLevels;
+			System.Collections.Generic.Dictionary<Frohgame.Core.SupplyBuildings, int> levels = session.CurrentPlanet.SupplyBuildingLevels;
 			
 			Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.SupplyBuildings.Metalmine]);
 			

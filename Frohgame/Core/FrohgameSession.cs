@@ -52,63 +52,6 @@ namespace Frohgame.Core
 			return true;
 		}
 		
-		/// <summary>
-		/// Liest die Level der Ressourcen-Gebäude aus.
-		/// Funktioniert NUR wenn die LastResult = Resoucenpage
-		/// </summary>
-		public Dictionary<SupplyBuildings, int> SupplyBuildingLevels {
-			get {
-				Dictionary<SupplyBuildings, int> buildingLevels = new Dictionary<SupplyBuildings, int>();
-				
-				HtmlAgilityPack.HtmlNodeCollection col = PlanetCache[this.CurrentPlanet].LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
-				
-				foreach(HtmlAgilityPack.HtmlNode building in col) {
-					int type = Convert.ToInt32(building.Attributes["ref"].Value);
-					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
-					//int levelValue = Convert.ToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
-					switch(type) {
-					case (int)SupplyBuildings.CrystalBox:
-						buildingLevels.Add(SupplyBuildings.CrystalBox, level);
-						break;
-					case (int)SupplyBuildings.Crystalmine:
-						buildingLevels.Add(SupplyBuildings.Crystalmine, level);
-						break;
-					case (int)SupplyBuildings.DeuteriumBox:
-						buildingLevels.Add(SupplyBuildings.DeuteriumBox, level);
-						break;
-					case (int)SupplyBuildings.DeuteriumSynthesizer:
-						buildingLevels.Add(SupplyBuildings.DeuteriumSynthesizer, level);
-						break;
-					case (int)SupplyBuildings.FusionPowerStation:
-						buildingLevels.Add(SupplyBuildings.FusionPowerStation, level);
-						break;
-					case (int)SupplyBuildings.HiddenCrystalBox:
-						buildingLevels.Add(SupplyBuildings.HiddenCrystalBox, level);
-						break;
-					case (int)SupplyBuildings.HiddenDeuteriumBox:
-						buildingLevels.Add(SupplyBuildings.HiddenDeuteriumBox, level);
-						break;
-					case (int)SupplyBuildings.HiddenMetalBox:
-						buildingLevels.Add(SupplyBuildings.HiddenMetalBox, level);
-						break;
-					case (int)SupplyBuildings.MetalBox:
-						buildingLevels.Add(SupplyBuildings.MetalBox, level);
-						break;
-					case (int)SupplyBuildings.Metalmine:
-						buildingLevels.Add(SupplyBuildings.Metalmine, level);
-						break;
-					case (int)SupplyBuildings.SolarPowerPlant:
-						buildingLevels.Add(SupplyBuildings.SolarPowerPlant, level);
-						break;
-					default: 
-						break;
-					}
-				}
-				
-				return buildingLevels;
-			}
-		}
-		
 		public Frohgame.Core.Mathemathics.Calculator Calculator = new Frohgame.Core.Mathemathics.Calculator();
 		
 		HttpHandler _httpHandler = new HttpHandler ("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0");
@@ -130,17 +73,7 @@ namespace Frohgame.Core
 			set { _logger = value; }
 		}
 		
-		Dictionary<Planet, Frohgame.FrohgameCache> _planetCache;
-		public Dictionary<Planet, Frohgame.FrohgameCache> PlanetCache {
-			get {
-				return this._planetCache;
-			}
-			set {
-				_planetCache = value;
-			}
-		}
-		
-		Frohgame.FrohgameCache _accountCache;
+		Frohgame.FrohgameCache _accountCache = new Frohgame.FrohgameCache();
 		public Frohgame.FrohgameCache AccountCache {
 			get {
 				return this._accountCache;
@@ -191,7 +124,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public string Token {
 			get {
-				string token = PlanetCache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
+				string token = this.CurrentPlanet.Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
 				Logger.Log (LoggingCategories.Parse, "Token: " + (!string.IsNullOrEmpty (token) ? token : "None"));
 				return token;
 			}
@@ -295,14 +228,14 @@ namespace Frohgame.Core
 		public HttpResult NagivateToIndexPage (IndexPages page)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NagivateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
-			return 
-				this.AccountCache.LastPageResult =
-				this.AccountCache.LastIndexPageResult =
-				this.AccountCache.LastIndexPagesResults[(int)page] =
-				this.PlanetCache[CurrentPlanet].LastPageResult = 
-				this.PlanetCache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
-				this.PlanetCache[CurrentPlanet].LastIndexPageResult = 
-					HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
+			HttpResult tmp = HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
+			this.AccountCache.LastIndexPageResult = tmp;
+			this.AccountCache.LastPageResult = tmp;
+			this.AccountCache.LastIndexPagesResults[(int)IndexPages.Overview] = tmp;
+			this.CurrentPlanet.Cache.LastPageResult = tmp;
+			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)IndexPages.Overview] =  tmp;
+			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
+			return tmp;
 		}
 
 		/// <summary>
@@ -319,18 +252,17 @@ namespace Frohgame.Core
 			//Logindaten senden^^
 			Logger.Log (LoggingCategories.NavigationAction, "Sending Login Data");
 			HttpResult tmp = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
-
+			
+			this.AccountCache.LastIndexPageResult = tmp;
+			this.AccountCache.LastPageResult = tmp;
+			this.AccountCache.LastIndexPagesResults[(int)IndexPages.Overview] = tmp;
+			this.CurrentPlanet.Cache.LastPageResult = tmp;
+			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)IndexPages.Overview] =  tmp;
+			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
+			
 			//Nach Logout Link suchen... falls vorhanden => login war erfolgreich, sonst nicht
 			if(!IsLoggedIn(false))
 				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
-			
-			this.AccountCache.LastPageResult =
-				this.AccountCache.LastIndexPageResult =
-				this.AccountCache.LastIndexPagesResults[(int)IndexPages.Overview] =
-				this.PlanetCache[CurrentPlanet].LastPageResult = 
-				this.PlanetCache[CurrentPlanet].LastIndexPagesResults[(int)IndexPages.Overview] = 
-				this.PlanetCache[CurrentPlanet].LastIndexPageResult = 
-					tmp;
 			
 			Logger.Log (LoggingCategories.NavigationAction, "Login was successfull");
 		}
@@ -539,13 +471,13 @@ namespace Frohgame.Core
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
 		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
-			this.AccountCache.LastPageResult =
-				this.AccountCache.LastIndexPageResult =
-				this.AccountCache.LastIndexPagesResults[(int)page] =
-				this.PlanetCache[CurrentPlanet].LastPageResult = 
-				this.PlanetCache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
-				this.PlanetCache[CurrentPlanet].LastIndexPageResult = 
-					this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
+			HttpResult tmp = this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
+			this.AccountCache.LastPageResult = tmp;
+			this.AccountCache.LastIndexPageResult = tmp;
+			this.AccountCache.LastIndexPagesResults[(int)page] = tmp;
+			this.CurrentPlanet.Cache.LastPageResult =  tmp;
+			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)page] =  tmp;
+			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
 		}
 
         #endregion

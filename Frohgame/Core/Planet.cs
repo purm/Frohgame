@@ -174,6 +174,71 @@ namespace Frohgame.Core
 			set { _name = value; }
 		}
 		
+		FrohgameCache _cache = new FrohgameCache();
+		public FrohgameCache Cache {
+			get {
+				return this._cache;
+			}
+			set {
+				_cache = value;
+			}
+		}		
+	
+		/// <summary>
+		/// Liest die Level der Ressourcen-Gebäude aus.
+		/// </summary>
+		public Dictionary<SupplyBuildings, int> SupplyBuildingLevels {
+			get {
+				Dictionary<SupplyBuildings, int> buildingLevels = new Dictionary<SupplyBuildings, int>();
+				
+				HtmlAgilityPack.HtmlNodeCollection col = Cache.LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
+				
+				foreach(HtmlAgilityPack.HtmlNode building in col) {
+					int type = Convert.ToInt32(building.Attributes["ref"].Value);
+					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					switch(type) {
+					case (int)SupplyBuildings.CrystalBox:
+						buildingLevels.Add(SupplyBuildings.CrystalBox, level);
+						break;
+					case (int)SupplyBuildings.Crystalmine:
+						buildingLevels.Add(SupplyBuildings.Crystalmine, level);
+						break;
+					case (int)SupplyBuildings.DeuteriumBox:
+						buildingLevels.Add(SupplyBuildings.DeuteriumBox, level);
+						break;
+					case (int)SupplyBuildings.DeuteriumSynthesizer:
+						buildingLevels.Add(SupplyBuildings.DeuteriumSynthesizer, level);
+						break;
+					case (int)SupplyBuildings.FusionPowerStation:
+						buildingLevels.Add(SupplyBuildings.FusionPowerStation, level);
+						break;
+					case (int)SupplyBuildings.HiddenCrystalBox:
+						buildingLevels.Add(SupplyBuildings.HiddenCrystalBox, level);
+						break;
+					case (int)SupplyBuildings.HiddenDeuteriumBox:
+						buildingLevels.Add(SupplyBuildings.HiddenDeuteriumBox, level);
+						break;
+					case (int)SupplyBuildings.HiddenMetalBox:
+						buildingLevels.Add(SupplyBuildings.HiddenMetalBox, level);
+						break;
+					case (int)SupplyBuildings.MetalBox:
+						buildingLevels.Add(SupplyBuildings.MetalBox, level);
+						break;
+					case (int)SupplyBuildings.Metalmine:
+						buildingLevels.Add(SupplyBuildings.Metalmine, level);
+						break;
+					case (int)SupplyBuildings.SolarPowerPlant:
+						buildingLevels.Add(SupplyBuildings.SolarPowerPlant, level);
+						break;
+					default: 
+						break;
+					}
+				}
+				
+				return buildingLevels;
+			}
+		}
+		
 		StringManager _stringManager;
 		Logger _logger;
 		HtmlAgilityPack.HtmlNode _htmlParser;

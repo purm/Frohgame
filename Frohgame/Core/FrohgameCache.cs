@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Frohgame.Http;
 using Frohgame.Core;
+using System.Linq;
 using System.Collections.ObjectModel;
 
 namespace Frohgame
@@ -10,14 +11,24 @@ namespace Frohgame
 	public class FrohgameCache
 	{	
 		public FrohgameCache() {
-			this.LastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
-			this._lastIndexPagesResults = new ObservableCollection<HttpResult>();
+			//this.LastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
+//			this._lastIndexPagesResults = new ObservableCollection<HttpResult>();
 			this.LastIndexPagesResults.CollectionChanged += HandleLastIndexPagesResultshandleCollectionChanged;
+			
+			int maxEnum = (int)Enum.GetValues(typeof(IndexPages)).Cast<IndexPages>().Max();
+			for(int i = 0; i < maxEnum; i++) {
+				LastIndexPagesParsers.Add(new HtmlAgilityPack.HtmlDocument());
+				LastIndexPagesResults.Add(null);
+			}
 		}
 
 		void HandleLastIndexPagesResultshandleCollectionChanged (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			throw new NotImplementedException();
+			if(LastIndexPagesResults[e.NewStartingIndex] != null) {
+				if(LastIndexPagesResults[e.NewStartingIndex].ResponseContent != null) {
+					this.LastIndexPagesParsers[e.NewStartingIndex].LoadHtml(LastIndexPagesResults[e.NewStartingIndex].ResponseContent);
+				}
+			}
 		}
 
 		[NonSerialized()]
@@ -100,7 +111,7 @@ namespace Frohgame
 			}
 		}
 		
-		ObservableCollection<HttpResult> _lastIndexPagesResults;
+		ObservableCollection<HttpResult> _lastIndexPagesResults = new ObservableCollection<HttpResult>();
 		public ObservableCollection<HttpResult> LastIndexPagesResults {
 			get {
 				return this._lastIndexPagesResults;
@@ -111,7 +122,7 @@ namespace Frohgame
 		}
 		
 		[NonSerialized()]
-		ObservableCollection<HtmlAgilityPack.HtmlDocument> _lastIndexPagesParsers;
+		ObservableCollection<HtmlAgilityPack.HtmlDocument> _lastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
 		public ObservableCollection<HtmlAgilityPack.HtmlDocument> LastIndexPagesParsers {
 			get {
 				return this._lastIndexPagesParsers;
