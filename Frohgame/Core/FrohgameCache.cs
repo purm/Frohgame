@@ -121,6 +121,16 @@ namespace Frohgame
 		ObservableCollection<HttpResult> _lastIndexPagesResults = new ObservableCollection<HttpResult>();
 		public ObservableCollection<HttpResult> LastIndexPagesResults {
 			get {
+//				if(this._lastIndexPagesResults == null) {
+//					this._lastIndexPagesResults = new ObservableCollection<HttpResult>();
+//					
+//					int maxEnum = (int)Enum.GetValues(typeof(IndexPages)).Cast<IndexPages>().Max();
+//					
+//					for(int i = 0; i < maxEnum; i++) {
+//						_lastIndexPagesResults.Add(null);
+//					}
+//				}
+				
 				return this._lastIndexPagesResults;
 			}
 			private set {
@@ -132,7 +142,17 @@ namespace Frohgame
 		ObservableCollection<HtmlAgilityPack.HtmlDocument> _lastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
 		public ObservableCollection<HtmlAgilityPack.HtmlDocument> LastIndexPagesParsers {
 			get {
-				return this._lastIndexPagesParsers;
+				if(this._lastIndexPagesParsers == null) {
+					this._lastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
+					
+					int maxEnum = (int)Enum.GetValues(typeof(IndexPages)).Cast<IndexPages>().Max();
+					
+					for(int i = 0; i < maxEnum; i++) {
+						_lastIndexPagesParsers.Add(null);
+					}	
+				}
+				
+				return _lastIndexPagesParsers;
 			}
 			private set {
 				_lastIndexPagesParsers = value;

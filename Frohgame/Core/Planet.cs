@@ -179,7 +179,7 @@ namespace Frohgame.Core
 			get {
 				return this._cache;
 			}
-			set {
+			private set {
 				_cache = value;
 			}
 		}		
