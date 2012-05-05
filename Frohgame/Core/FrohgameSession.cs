@@ -490,15 +490,25 @@ namespace Frohgame.Core
 		/// <param name='path'>
 		/// Dateipfad
 		/// </param>
-		public void Serialize(string path) {
+		public void Serialize(string path, bool encrypt) {
+			//TODO encryption optional machen
 			FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-			DESCryptoServiceProvider cryptic = new DESCryptoServiceProvider();
-			string hwID = Utils.Truncate(Utils.HardwareID, 8);
-			cryptic.Key = ASCIIEncoding.ASCII.GetBytes(hwID);
-			cryptic.IV = ASCIIEncoding.ASCII.GetBytes(hwID);
+			RijndaelManaged RMCrypto = new RijndaelManaged();
+			byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
+			byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
+			
+			byte[] iv = Utils.Combine(ivv, ivv);
+			
+			Console.WriteLine("ASDF: " + iv.Length);
+			
+			RMCrypto.BlockSize = 128;
+			RMCrypto.KeySize = 128;
+			RMCrypto.IV = iv;
 
+			RMCrypto.Key = hwID;
+			
 			CryptoStream crStream = new CryptoStream(stream,
-   				cryptic.CreateEncryptor(), CryptoStreamMode.Write);
+   				RMCrypto.CreateEncryptor(), CryptoStreamMode.Write);
 
 			BinaryFormatter formatter =  new BinaryFormatter();
 			formatter.Serialize(crStream, this);
@@ -510,16 +520,23 @@ namespace Frohgame.Core
 		/// <summary>
 		/// Lädt eine Session aus einer Datei
 		/// </summary>
-		public static FrohgameSession Deserialize(string path) {
+		public static FrohgameSession Deserialize(string path, bool encrypted) {
+			//TODO encryption optional machen
 			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-
-			DESCryptoServiceProvider cryptic = new DESCryptoServiceProvider();
-			string hwID = Utils.Truncate(Utils.HardwareID, 8);
-			cryptic.Key = ASCIIEncoding.ASCII.GetBytes(hwID);
-			cryptic.IV = ASCIIEncoding.ASCII.GetBytes(hwID);
+			RijndaelManaged RMCrypto = new RijndaelManaged();
+			byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
+			byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
+			
+			byte[] iv = Utils.Combine(ivv, ivv);
+			
+			RMCrypto.BlockSize = 128;
+			RMCrypto.KeySize = 128;
+			RMCrypto.IV = iv;
+			Console.WriteLine("ASDF: " + RMCrypto.IV.Length);
+			RMCrypto.Key = hwID;
 			
 			CryptoStream crStream = new CryptoStream(stream,
-			    cryptic.CreateDecryptor(), CryptoStreamMode.Read);
+			    RMCrypto.CreateDecryptor(), CryptoStreamMode.Read);
 			
 			BinaryFormatter formatter =  new BinaryFormatter();
 			object obj = formatter.Deserialize(crStream);

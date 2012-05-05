@@ -35,7 +35,7 @@ namespace FrohgameTestApp
 			if(File.Exists("session.dat")) {
 				Console.WriteLine("Session von Datei laden? (Yes/No)");
 				if(Console.ReadLine().ToUpper() == "YES") {
-					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat");
+					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat", true);
 					loadedSessionFromFile = true;
 				}
 			}
@@ -102,7 +102,7 @@ namespace FrohgameTestApp
 			Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.SupplyBuildings.Metalmine]);
 			
 			Console.ReadKey();
-			session.Serialize("session.dat");
+			session.Serialize("session.dat", true);
 		}
 		static void HttpHandler_OnNavigating (string targetUrl, string post)
 		{

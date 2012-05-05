@@ -144,5 +144,59 @@ namespace Frohgame
 			}
 			return source;
 	    }
+		
+		//from http://dotnet-snippets.de/dns/c-gibt-den-md5-hash-eines-stings-als-string-zurueck-SID18.aspx
+		/// <summary>
+		/// Gibt einen MD5 Hash als String zurück
+		/// </summary>
+		/// <param name="TextToHash">string der Gehasht werden soll.</param>
+		/// <returns>Hash als string.</returns>
+		public static string GetMD5Hash(string TextToHash)
+		{
+		  //Prüfen ob Daten übergeben wurden.
+		  if((TextToHash == null) || (TextToHash.Length == 0))
+		  {
+		    return string.Empty;
+		  }
+		
+		  //MD5 Hash aus dem String berechnen. Dazu muss der string in ein Byte[]
+		  //zerlegt werden. Danach muss das Resultat wieder zurück in ein string.
+		  System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+		  byte[] textToHash = Encoding.Default.GetBytes (TextToHash);
+		  byte[] result = md5.ComputeHash(textToHash); 
+		
+		  return System.BitConverter.ToString(result).Replace("-", string.Empty); 
+		} 
+		
+		//From http://stackoverflow.com/questions/8820399/c-sharp-4-0-how-to-get-64-bit-hash-code-of-given-string
+		public static long GetHashCodeInt64(string input)
+		{
+		    var s1 = input.Substring(0, input.Length / 2);
+		    var s2 = input.Substring(input.Length / 2);
+		
+		    var x= ((long)s1.GetHashCode()) << 0x20 | s2.GetHashCode();
+		
+		    return x;
+		}
+		
+		//From http://stackoverflow.com/questions/1318933/c-sharp-int-to-byte
+		public static byte[] IntToByteArray(long input) {
+			byte[] intBytes = BitConverter.GetBytes(input);
+			if (BitConverter.IsLittleEndian)
+			    Array.Reverse(intBytes);
+			return intBytes;	
+		}
+		
+		//from http://stackoverflow.com/questions/415291/best-way-to-combine-two-or-more-byte-arrays-in-c-sharp
+		static public byte[] Combine( params byte[][] arrays )
+	    {
+	        byte[] rv = new byte[ arrays.Sum( a => a.Length ) ];
+	        int offset = 0;
+	        foreach ( byte[] array in arrays ) {
+	            System.Buffer.BlockCopy( array, 0, rv, offset, array.Length );
+	            offset += array.Length;
+	        }
+	        return rv;
+	    }
 	}
 }
