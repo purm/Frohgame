@@ -231,9 +231,9 @@ namespace Frohgame.Core
 			HttpResult tmp = HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
 			this.AccountCache.LastIndexPageResult = tmp;
 			this.AccountCache.LastPageResult = tmp;
-			this.AccountCache.LastIndexPagesResults[(int)IndexPages.Overview] = tmp;
+			this.AccountCache.LastIndexPagesResults[(int)page] = tmp;
 			this.CurrentPlanet.Cache.LastPageResult = tmp;
-			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)IndexPages.Overview] =  tmp;
+			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)page] =  tmp;
 			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
 			return tmp;
 		}

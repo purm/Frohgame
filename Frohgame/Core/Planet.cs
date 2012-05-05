@@ -56,7 +56,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Metal {
 			get {
-				string metalString = _htmlParser.SelectSingleNode (_stringManager.MetalXPath).InnerText;
+				string metalString = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.MetalXPath).InnerText;
 				int Result = Utils.StringReplaceToInt32 (metalString);
 				_logger.Log (LoggingCategories.Parse, "Metal: " + Result.ToString ());
 				return Result;
@@ -68,7 +68,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int MetalPerHour {
 			get {
-				string tmp = _htmlParser.SelectSingleNode (_stringManager.MetalPerHourXPath).Attributes ["title"].Value;
+				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.MetalPerHourXPath).Attributes ["title"].Value;
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.MetalPerHourRegex);
 				int Result = 0;
 				if (!string.IsNullOrEmpty (tmp1))
@@ -84,7 +84,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Crystal {
 			get {
-				string crystalString = _htmlParser.SelectSingleNode (_stringManager.CrystalXPath).InnerText;
+				string crystalString = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.CrystalXPath).InnerText;
 				int Result = Utils.StringReplaceToInt32 (crystalString);
 				_logger.Log (LoggingCategories.Parse, "Crystal: " + Result.ToString ());
 				return Result;
@@ -96,7 +96,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int CrystalPerHour {
 			get {
-				string tmp = _htmlParser.SelectSingleNode (_stringManager.CrystalPerHourXPath).Attributes ["title"].Value;
+				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.CrystalPerHourXPath).Attributes ["title"].Value;
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.CrystalPerHourRegex);
 				int Result = 0;
 				if (!string.IsNullOrEmpty (tmp1))
@@ -112,7 +112,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Deuterium {
 			get {
-				string tmp = _htmlParser.SelectSingleNode (_stringManager.DeuteriumXPath).InnerText;
+				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DeuteriumXPath).InnerText;
 				int Result = Utils.StringReplaceToInt32 (tmp);
 				_logger.Log (LoggingCategories.Parse, "Deuterium: " + Result.ToString ());
 				return Result;
@@ -124,7 +124,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int DeuteriumPerHour {
 			get {
-				string tmp = _htmlParser.SelectSingleNode (_stringManager.DeuteriumPerHourXPath).Attributes ["title"].Value;
+				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DeuteriumPerHourXPath).Attributes ["title"].Value;
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.DeuteriumPerHourRegex);
 				int Result = 0;
 				if (!string.IsNullOrEmpty (tmp1))
@@ -140,7 +140,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Energy {
 			get {
-				string tmp = _htmlParser.SelectSingleNode (_stringManager.EnergyXPath).InnerText;
+				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.EnergyXPath).InnerText;
 				int Result = Utils.StringReplaceToInt32 (tmp);
 				_logger.Log (LoggingCategories.Parse, "Energy: " + Result.ToString ());
 				return Result;
@@ -190,6 +190,10 @@ namespace Frohgame.Core
 		public Dictionary<SupplyBuildings, int> SupplyBuildingLevels {
 			get {
 				Dictionary<SupplyBuildings, int> buildingLevels = new Dictionary<SupplyBuildings, int>();
+				
+				if(Cache.LastIndexPagesParsers[(int)IndexPages.Resources] == null) {
+					throw new NoCacheDataException("Keine Cachedaten für IndexPages.Resources gefunden");
+				}
 				
 				HtmlAgilityPack.HtmlNodeCollection col = Cache.LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
 				
@@ -241,7 +245,6 @@ namespace Frohgame.Core
 		
 		StringManager _stringManager;
 		Logger _logger;
-		HtmlAgilityPack.HtmlNode _htmlParser;
 		
 		/// <summary>
 		/// parset planetinformationen
@@ -250,7 +253,6 @@ namespace Frohgame.Core
 		public Planet (HtmlAgilityPack.HtmlNode planetNode, StringManager strings, Logger logger)
 		{
 			logger.Log (LoggingCategories.Parse, "Planet Constructor");
-			this._htmlParser = planetNode;
 			this._stringManager = strings;
 			this._logger = logger;
 			

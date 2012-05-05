@@ -35,4 +35,11 @@ namespace Frohgame.Core {
 
         }
     }
+	
+	public class NoCacheDataException : Exception {
+        public NoCacheDataException(string message)
+            : base(message) {
+
+        }
+    }
 }
