@@ -499,8 +499,6 @@ namespace Frohgame.Core
 			
 			byte[] iv = Utils.Combine(ivv, ivv);
 			
-			Console.WriteLine("ASDF: " + iv.Length);
-			
 			RMCrypto.BlockSize = 128;
 			RMCrypto.KeySize = 128;
 			RMCrypto.IV = iv;
@@ -532,7 +530,6 @@ namespace Frohgame.Core
 			RMCrypto.BlockSize = 128;
 			RMCrypto.KeySize = 128;
 			RMCrypto.IV = iv;
-			Console.WriteLine("ASDF: " + RMCrypto.IV.Length);
 			RMCrypto.Key = hwID;
 			
 			CryptoStream crStream = new CryptoStream(stream,
