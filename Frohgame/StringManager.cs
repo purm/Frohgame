@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using FROHGAME.Core;
+using Frohgame.Core;
 
 /*
  * 
@@ -10,7 +10,7 @@ using FROHGAME.Core;
  * 
  */
 
-namespace FROHGAME
+namespace Frohgame
 {
 	/// <summary>
 	/// Stellt eine Reihe von Regex & Url Konstaten dar, sodass nach einem Ogame-Update nur diese Datei aktualisiert werden muss

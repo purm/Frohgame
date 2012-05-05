@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FROHGAME.Core
+namespace Frohgame.Core
 {
 	static public class Mathemathics
 	{
@@ -66,7 +66,7 @@ namespace FROHGAME.Core
 			public int Crystal;
 			public int Deuterium;
 			public int Energy;
-			public FROHGAME.Core.ElementTypes Type;
+			public Frohgame.Core.ElementTypes Type;
 		}
 	
 		[Serializable()]
@@ -88,14 +88,14 @@ namespace FROHGAME.Core
 			{
 				//Todo weitere Daten hinzufügen
 				Offsets.Add (
-				(int)FROHGAME.Core.SupplyBuildings.Metalmine, 
+				(int)Frohgame.Core.SupplyBuildings.Metalmine, 
 				new ObjectOffset () {
 				    Factor = 1.5,
 					Metal = 60, 
 					Crystal = 15, 
 				    Deuterium = 0,
 				    Energy = 0,
-					Type = FROHGAME.Core.ElementTypes.Building
+					Type = Frohgame.Core.ElementTypes.Building
 				}
 			);
 			}
@@ -128,14 +128,14 @@ namespace FROHGAME.Core
 				res.Energy = (int)Energy;
 			
 				switch (offset.Type) {
-				case FROHGAME.Core.ElementTypes.Building: // Stations & Resourcen- Buildings
+				case Frohgame.Core.ElementTypes.Building: // Stations & Resourcen- Buildings
 				
 					Result = ((Metal + Crystal) * 3600) / (2500 * (RoboFabrik - 1 * -1) * Math.Pow (2, NanitFabrik));
 					Result = Result / UniSpeed;
 					res.Duration = TimeSpan.FromSeconds (Result);
 					break;
 						
-				case FROHGAME.Core.ElementTypes.Research: //Forschung 
+				case Frohgame.Core.ElementTypes.Research: //Forschung 
 				
 					Result = ((Metal + Crystal) * 3600) / (1000 * (RoboFabrik - 1 * -1) * Math.Pow (2, NanitFabrik));
 					if (Technocrat) {
@@ -145,7 +145,7 @@ namespace FROHGAME.Core
 					res.Duration = TimeSpan.FromSeconds (Result);
 					break;
 				
-				case FROHGAME.Core.ElementTypes.Ship: //Schiffe 
+				case Frohgame.Core.ElementTypes.Ship: //Schiffe 
 				
 					Result = Math.Floor ((Metal + Crystal) * 3600) / (2500 * (Werft - 1 * -1) * Math.Pow (2, NanitFabrik)); 
 					Result = Result * NextLevel; //Nextlevel ist auch die Anzahl der Elemente falls es ein Flug oder Def Object ist

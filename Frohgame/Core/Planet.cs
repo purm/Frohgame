@@ -9,7 +9,7 @@ using System.Text;
  * 
  */
 
-namespace FROHGAME.Core
+namespace Frohgame.Core
 {
 	/// <summary>
 	/// Stellt die Position eines Planeten dar

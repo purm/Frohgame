@@ -56,7 +56,7 @@ namespace Frohgame
 			{
 				//Todo weitere Daten hinzufügen
 				Offsets.Add (
-				(int)FROHGAME.Core.Military.LightFighter,
+				(int)Frohgame.Core.Military.LightFighter,
 				new ObjectOffset () {
 				    Antrieb = 115,
 					Multi = 10,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using FROHGAME.Http;
+using Frohgame.Http;
 using System.Xml.XPath;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -15,7 +15,7 @@ using System.Security.Cryptography;
  * 
  */
 
-namespace FROHGAME.Core
+namespace Frohgame.Core
 {
 	[Serializable()]
 	public class FrohgameSession
@@ -39,9 +39,9 @@ namespace FROHGAME.Core
 		/// </param>
 		public bool IsLoggedIn(bool refresh) {
 			if(refresh)
-				this.LastResult = NagivateToIndexPage(IndexPages.Overview);
+				NagivateToIndexPage(IndexPages.Overview);
 			
-			HtmlAgilityPack.HtmlNode node = HtmlParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
+			HtmlAgilityPack.HtmlNode node = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
 			if(node == null)
 				return false;
 				
@@ -60,7 +60,7 @@ namespace FROHGAME.Core
 			get {
 				Dictionary<SupplyBuildings, int> buildingLevels = new Dictionary<SupplyBuildings, int>();
 				
-				HtmlAgilityPack.HtmlNodeCollection col = HtmlParser.DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
+				HtmlAgilityPack.HtmlNodeCollection col = Cache[this.CurrentPlanet].LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
 				
 				foreach(HtmlAgilityPack.HtmlNode building in col) {
 					int type = Convert.ToInt32(building.Attributes["ref"].Value);
@@ -109,9 +109,10 @@ namespace FROHGAME.Core
 			}
 		}
 		
-		public FROHGAME.Core.Mathemathics.Calculator Calculator = new FROHGAME.Core.Mathemathics.Calculator();
+		public Frohgame.Core.Mathemathics.Calculator Calculator = new Frohgame.Core.Mathemathics.Calculator();
 		
 		HttpHandler _httpHandler = new HttpHandler ("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0");
+
 		/// <summary>
 		/// Http-Handler, zum abbonieren des Navigate Events
 		/// </summary>
@@ -128,51 +129,16 @@ namespace FROHGAME.Core
 			get { return _logger; }
 			set { _logger = value; }
 		}
-		
-		[NonSerialized()]
-		HtmlAgilityPack.HtmlDocument _htmlParser = new HtmlAgilityPack.HtmlDocument ();
-		/// <summary>
-		/// Zum Html parsen
-		/// </summary>
-		public HtmlAgilityPack.HtmlDocument HtmlParser {
-			get { 
-				if(_htmlParser == null) {
-					_htmlParser = new HtmlAgilityPack.HtmlDocument();
-					if(this.LastResult.ResponseContent != null) {
-						_htmlParser.LoadHtml(this.LastResult.ResponseContent);
-					}
-				}
-
-					return _htmlParser; 
-			}
-			set { _htmlParser = value; }
-		}
-
-		HttpResult __lastResult;
-
-		/// <summary>
-		/// Bitte NUR bei Abfragen Festlegen, welche im content Metall, erz, links etc enthalten => keine ajax abfragen etc hier storen, sondern nur INDEX-PAGES
-		/// </summary>
-		HttpResult _lastResult {
+		Dictionary<Planet, Frohgame.FrohgameCache> _cache;
+		public Dictionary<Planet, Frohgame.FrohgameCache> Cache {
 			get {
-				return __lastResult;
+				return this._cache;
 			}
 			set {
-				this.__lastResult = value;
-
-				if(this.LastResult.ResponseContent != null) {
-					HtmlParser.LoadHtml(this.LastResult.ResponseContent);
-				}
+				_cache = value;
 			}
 		}
-		/// <summary>
-		/// Das zuletzt zurückbekommene Http Ergebnis
-		/// </summary>
-		internal HttpResult LastResult {
-			get { return _lastResult; }
-			set { _lastResult = value; }
-		}
-
+		
 		string _userPassword;
 		/// <summary>
 		/// Passwort des Benutzers
@@ -202,7 +168,7 @@ namespace FROHGAME.Core
 		/// </summary>
 		public string Version {
 			get {
-				string version = HtmlParser.DocumentNode.SelectSingleNode(_stringManager.VersionRegex).Attributes["content"].Value;
+				string version = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.VersionRegex).Attributes["content"].Value;
 				Logger.Log (LoggingCategories.Parse, "Version: " + version);
 				return version;
 			}
@@ -214,7 +180,7 @@ namespace FROHGAME.Core
 		/// </summary>
 		public string Token {
 			get {
-				string token = HtmlParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
+				string token = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
 				Logger.Log (LoggingCategories.Parse, "Token: " + (!string.IsNullOrEmpty (token) ? token : "None"));
 				return token;
 			}
@@ -225,7 +191,7 @@ namespace FROHGAME.Core
 		/// </summary>
 		public int DarkMatter {
 			get {
-				string tmp = HtmlParser.DocumentNode.SelectSingleNode (_stringManager.DarkMatterXPath).InnerText;
+				string tmp = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DarkMatterXPath).InnerText;
 				int Result = Utils.StringReplaceToInt32 (tmp);
 				Logger.Log (LoggingCategories.Parse, "DarkMatter: " + Result.ToString ());
 				return Result;
@@ -238,7 +204,7 @@ namespace FROHGAME.Core
 		public int CurrentPlanetId {
 			get {
 				return Utils.StringReplaceToInt32(
-					HtmlParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
+					Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
 			}
 		}
 		
@@ -302,7 +268,15 @@ namespace FROHGAME.Core
         #endregion
 
         #region Public Methods
-
+		
+		public void SetLastIndexPage(IndexPages page, HttpResult res) {
+			if(res == null) {
+				throw new ArgumentException("null", "res");	
+			}
+			
+			
+		}
+		
 		/// <summary>
 		/// Navigiert zu einer Ogame-Standard Seite
 		/// </summary>
@@ -310,7 +284,11 @@ namespace FROHGAME.Core
 		public HttpResult NagivateToIndexPage (IndexPages page)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NagivateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
-			return this.LastResult = HttpHandler.Get (this._stringManager.GetIndexPageUrl (page));
+			return 
+				this.Cache[CurrentPlanet].LastPageResult = 
+				this.Cache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
+				this.Cache[CurrentPlanet].LastIndexPageResult = 
+					HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
 		}
 
 		/// <summary>
@@ -326,12 +304,17 @@ namespace FROHGAME.Core
 
 			//Logindaten senden^^
 			Logger.Log (LoggingCategories.NavigationAction, "Sending Login Data");
-			this.LastResult = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
+			HttpResult tmp = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
 
 			//Nach Logout Link suchen... falls vorhanden => login war erfolgreich, sonst nicht
 			if(!IsLoggedIn(false))
 				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
-
+			
+			this.Cache[CurrentPlanet].LastPageResult = 
+				this.Cache[CurrentPlanet].LastIndexPagesResults[(int)IndexPages.Overview] = 
+				this.Cache[CurrentPlanet].LastIndexPageResult = 
+					tmp;
+			
 			Logger.Log (LoggingCategories.NavigationAction, "Login was successfull");
 		}
 
@@ -343,7 +326,7 @@ namespace FROHGAME.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.LastResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
+			if (this.Cache[CurrentPlanet].LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NagivateToIndexPage (IndexPages.Resources);
 			} else {
@@ -381,7 +364,7 @@ namespace FROHGAME.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.LastResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
+			if (this.Cache[CurrentPlanet].LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NagivateToIndexPage (IndexPages.Station);
 			} else {
@@ -522,7 +505,7 @@ namespace FROHGAME.Core
 		public List<Planet> PlanetList {
 			get {
 				List<Planet> ret = new List<Planet> ();
-				HtmlAgilityPack.HtmlNodeCollection planetNodes = HtmlParser.DocumentNode.SelectNodes (_stringManager.PlanetListXPath);
+				HtmlAgilityPack.HtmlNodeCollection planetNodes = this.Cache[CurrentPlanet].LastIndexPageParser.DocumentNode.SelectNodes (_stringManager.PlanetListXPath);
 
 				foreach (HtmlAgilityPack.HtmlNode planetNode in planetNodes) {
 					ret.Add (new Planet (planetNode, _stringManager, Logger));
@@ -539,7 +522,10 @@ namespace FROHGAME.Core
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
 		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
-			this.LastResult = this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
+			this.Cache[CurrentPlanet].LastPageResult = 
+				this.Cache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
+				this.Cache[CurrentPlanet].LastIndexPageResult =
+					this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
 		}
 
         #endregion

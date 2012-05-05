@@ -9,7 +9,7 @@ using System.Text;
  * 
  */
 
-namespace FROHGAME.Core {
+namespace Frohgame.Core {
     public class NotEnoughMetalException : Exception {
         public NotEnoughMetalException(string message)
             : base(message) {

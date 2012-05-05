@@ -10,7 +10,7 @@ using System.Net;
  * 
  */
 
-namespace FROHGAME.Http
+namespace Frohgame.Http
 {
 	[Serializable()]
 	public class HttpResult

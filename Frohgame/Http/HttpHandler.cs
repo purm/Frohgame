@@ -13,7 +13,7 @@ using System.Runtime.Serialization.Formatters.Binary;
  * 
  */
 
-namespace FROHGAME.Http
+namespace Frohgame.Http
 {
 	[Serializable()]
 	public class HttpHandler

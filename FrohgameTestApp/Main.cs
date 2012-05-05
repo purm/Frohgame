@@ -29,28 +29,28 @@ namespace FrohgameTestApp
 			System.Xml.XmlNode accNode = xmlDoc.SelectSingleNode ("//account[@name]");
 			//SCHROTT ENDE
 			
-			FROHGAME.Core.FrohgameSession session = null;
+			Frohgame.Core.FrohgameSession session = null;
 			bool loadedSessionFromFile = false;
 			
 			if(File.Exists("session.dat")) {
 				Console.WriteLine("Session von Datei laden? (Yes/No)");
 				if(Console.ReadLine().ToUpper() == "YES") {
-					session = FROHGAME.Core.FrohgameSession.Deserialize("session.dat");
+					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat");
 					loadedSessionFromFile = true;
 				}
 			}
 			
 			if(session == null) {
-				session = new FROHGAME.Core.FrohgameSession (accNode.Attributes ["name"].Value, accNode.Attributes ["password"].Value, accNode.Attributes ["server"].Value);	
+				session = new Frohgame.Core.FrohgameSession (accNode.Attributes ["name"].Value, accNode.Attributes ["password"].Value, accNode.Attributes ["server"].Value);	
 			}
 			else {
 				Console.WriteLine("Session erfolgreich deserialisiert");
 			}
 			
 			//session.HttpHandler.Proxy = "127.0.0.1:8888";
-			session.Logger.OnStringLogged += new FROHGAME.Logger.OnLoggedStringDelegate (Logger_OnStringLogged);
-			session.HttpHandler.OnNavigating += new FROHGAME.Http.HttpHandler.OnNavigatingDelegate (HttpHandler_OnNavigating);
-			session.HttpHandler.OnNavigated += new FROHGAME.Http.HttpHandler.OnNavigatedDelegate (HttpHandler_OnNavigated);	
+			session.Logger.OnStringLogged += new Frohgame.Logger.OnLoggedStringDelegate (Logger_OnStringLogged);
+			session.HttpHandler.OnNavigating += new Frohgame.Http.HttpHandler.OnNavigatingDelegate (HttpHandler_OnNavigating);
+			session.HttpHandler.OnNavigated += new Frohgame.Http.HttpHandler.OnNavigatedDelegate (HttpHandler_OnNavigated);	
 			
 			//session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
 			
@@ -76,12 +76,12 @@ namespace FrohgameTestApp
 			Console.WriteLine (str);
 
 			Console.WriteLine ("PLANETEN:");
-			foreach (FROHGAME.Core.Planet p in session.PlanetList) {
+			foreach (Frohgame.Core.Planet p in session.PlanetList) {
 				Console.WriteLine ("PLANET: " + p.Name + " - " + p.Id + " - [" + p.Coords.Galaxy.ToString () + ":" + p.Coords.SunSystem.ToString () + ":" + p.Coords.Place.ToString () + "]");
 			}
 
 			//Zeit bis 100.000 Metall:
-			string time = FROHGAME.Core.Mathemathics.CalcMaxTimeForRes (
+			string time = Frohgame.Core.Mathemathics.CalcMaxTimeForRes (
                 session.CurrentPlanet.Metal,
                 session.CurrentPlanet.Crystal,
                 session.CurrentPlanet.Deuterium,
@@ -96,10 +96,10 @@ namespace FrohgameTestApp
 
 			Console.WriteLine ("TIME: " + time);
         
-			session.NagivateToIndexPage(FROHGAME.Core.IndexPages.Resources);
-			System.Collections.Generic.Dictionary<FROHGAME.Core.SupplyBuildings, int> levels = session.SupplyBuildingLevels;
+			session.NagivateToIndexPage(Frohgame.Core.IndexPages.Resources);
+			System.Collections.Generic.Dictionary<Frohgame.Core.SupplyBuildings, int> levels = session.SupplyBuildingLevels;
 			
-			Console.WriteLine("Metallmine level: " + levels[FROHGAME.Core.SupplyBuildings.Metalmine]);
+			Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.SupplyBuildings.Metalmine]);
 			
 			Console.ReadKey();
 			
@@ -114,31 +114,31 @@ namespace FrohgameTestApp
 			System.IO.File.AppendAllText ("log.txt", toLog + Environment.NewLine);
 		}
 
-		static void HttpHandler_OnNavigated (FROHGAME.Http.HttpResult res)
+		static void HttpHandler_OnNavigated (Frohgame.Http.HttpResult res)
 		{
 			string toLog = String.Format ("[DEBUG] [NAVIGATED] [{0}]: {1}", DateTime.Now.ToString (), res.ResponseUrl.ToString ());
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.WriteLine (toLog);
 			System.IO.File.AppendAllText ("log.txt", toLog + Environment.NewLine);
 
-			int sleep = FROHGAME.Utils.Random (2000, 5000);
+			int sleep = Frohgame.Utils.Random (2000, 5000);
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine ("Schlafen: " + sleep.ToString () + "ms");
 			Thread.Sleep (sleep);
 		}
 
-		static void Logger_OnStringLogged (FROHGAME.Core.LoggingCategories category, string log)
+		static void Logger_OnStringLogged (Frohgame.Core.LoggingCategories category, string log)
 		{
 			string toLog = String.Format ("[DEBUG] [{0}]: {1}", DateTime.Now.ToString (), log);
 
 			switch (category) {
-			case FROHGAME.Core.LoggingCategories.Combat:
+			case Frohgame.Core.LoggingCategories.Combat:
 				Console.ForegroundColor = ConsoleColor.Magenta;
 				break;
-			case FROHGAME.Core.LoggingCategories.NavigationAction:
+			case Frohgame.Core.LoggingCategories.NavigationAction:
 				Console.ForegroundColor = ConsoleColor.Gray;
 				break;
-			case FROHGAME.Core.LoggingCategories.Parse:
+			case Frohgame.Core.LoggingCategories.Parse:
 				Console.ForegroundColor = ConsoleColor.Cyan;
 				break;
 			default:

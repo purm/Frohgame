@@ -5,7 +5,9 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Management;
-using FROHGAME.Core;
+using Frohgame.Core;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 /*
  * 
@@ -13,7 +15,7 @@ using FROHGAME.Core;
  * 
  */
 
-namespace FROHGAME
+namespace Frohgame
 {
 	/// <summary>
 	/// Alles was sonst nirgendwo hinpasst und keiner eigenen Klasse bedarf

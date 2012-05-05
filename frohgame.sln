@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrohgameTestApp", "FrohgameTestApp\FrohgameTestApp.csproj", "{7A136F63-6F75-4134-AADE-C5C14E3E5C0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frohgame", "Frohgame\Frohgame.csproj", "{5F9E5B5B-B91B-42A4-BBF8-0DB96969E6B3}"

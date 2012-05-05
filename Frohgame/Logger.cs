@@ -10,7 +10,7 @@ using System.Diagnostics;
  * 
  */
 
-namespace FROHGAME
+namespace Frohgame
 //git test
 {
 	/// <summary>
@@ -22,7 +22,7 @@ namespace FROHGAME
 	{
         #region Delegates
 
-		public delegate void OnLoggedStringDelegate (FROHGAME.Core.LoggingCategories category,string log);
+		public delegate void OnLoggedStringDelegate (Frohgame.Core.LoggingCategories category,string log);
 
         #endregion
 
@@ -39,7 +39,7 @@ namespace FROHGAME
 
         #region Internal Methods
 
-		internal void Log (FROHGAME.Core.LoggingCategories category, string log)
+		internal void Log (Frohgame.Core.LoggingCategories category, string log)
 		{
 			if (OnStringLogged != null)
 				OnStringLogged (category, log);

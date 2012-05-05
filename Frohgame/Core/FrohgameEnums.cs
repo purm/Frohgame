@@ -10,7 +10,7 @@ using System.Text;
  * 
  */
 
-namespace FROHGAME.Core {
+namespace Frohgame.Core {
     #region Enums
 
     public enum SupplyBuildings {
