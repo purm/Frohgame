@@ -195,6 +195,7 @@ namespace Frohgame.Core
 					throw new NoCacheDataException("Keine Cachedaten für IndexPages.Resources gefunden");
 				}
 				
+				
 				HtmlAgilityPack.HtmlNodeCollection col = Cache.LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
 				
 				foreach(HtmlAgilityPack.HtmlNode building in col) {

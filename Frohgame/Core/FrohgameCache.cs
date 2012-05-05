@@ -12,10 +12,7 @@ namespace Frohgame
 	{	
 		public FrohgameCache() {
 			//this.LastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
-//			this._lastIndexPagesResults = new ObservableCollection<HttpResult>();
-			this.LastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
-			this.LastIndexPagesResults = new ObservableCollection<HttpResult>();
-			
+//			this._lastIndexPagesResults = new ObservableCollection<HttpResult>();			
 			this.LastIndexPagesResults.CollectionChanged += HandleLastIndexPagesResultshandleCollectionChanged;
 			
 			int maxEnum = (int)Enum.GetValues(typeof(IndexPages)).Cast<IndexPages>().Max();
@@ -149,7 +146,16 @@ namespace Frohgame
 					
 					for(int i = 0; i < maxEnum; i++) {
 						_lastIndexPagesParsers.Add(null);
-					}	
+					}
+					
+					for(int i = 0; i < LastIndexPagesResults.Count; i++) {
+						if(LastIndexPagesResults[i] != null) {
+							if(_lastIndexPagesParsers[i] == null) {
+								_lastIndexPagesParsers[i] = new HtmlAgilityPack.HtmlDocument();	
+							}
+							_lastIndexPagesParsers[i].LoadHtml(LastIndexPagesResults[i].ResponseContent);	
+						}
+					}
 				}
 				
 				return _lastIndexPagesParsers;

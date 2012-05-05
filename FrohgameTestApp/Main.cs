@@ -102,7 +102,6 @@ namespace FrohgameTestApp
 			Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.SupplyBuildings.Metalmine]);
 			
 			Console.ReadKey();
-			
 			session.Serialize("session.dat");
 		}
 		static void HttpHandler_OnNavigating (string targetUrl, string post)

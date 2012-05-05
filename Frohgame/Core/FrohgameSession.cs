@@ -186,7 +186,7 @@ namespace Frohgame.Core
 		}
 
 		/// <summary>
-		/// Erstellt eine neue FrohgameSession und versucht sich einzuloggen
+		/// Erstellt eine neue FrohgameSession
 		/// </summary>
 		/// <param name="name">Username</param>
 		/// <param name="password">Userpass</param>
