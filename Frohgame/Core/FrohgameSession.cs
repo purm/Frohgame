@@ -41,7 +41,7 @@ namespace Frohgame.Core
 			if(refresh)
 				NagivateToIndexPage(IndexPages.Overview);
 			
-			HtmlAgilityPack.HtmlNode node = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
+			HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
 			if(node == null)
 				return false;
 				
@@ -60,7 +60,7 @@ namespace Frohgame.Core
 			get {
 				Dictionary<SupplyBuildings, int> buildingLevels = new Dictionary<SupplyBuildings, int>();
 				
-				HtmlAgilityPack.HtmlNodeCollection col = Cache[this.CurrentPlanet].LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
+				HtmlAgilityPack.HtmlNodeCollection col = PlanetCache[this.CurrentPlanet].LastIndexPagesParsers[(int)IndexPages.Resources].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
 				
 				foreach(HtmlAgilityPack.HtmlNode building in col) {
 					int type = Convert.ToInt32(building.Attributes["ref"].Value);
@@ -129,13 +129,24 @@ namespace Frohgame.Core
 			get { return _logger; }
 			set { _logger = value; }
 		}
-		Dictionary<Planet, Frohgame.FrohgameCache> _cache;
-		public Dictionary<Planet, Frohgame.FrohgameCache> Cache {
+		
+		Dictionary<Planet, Frohgame.FrohgameCache> _planetCache;
+		public Dictionary<Planet, Frohgame.FrohgameCache> PlanetCache {
 			get {
-				return this._cache;
+				return this._planetCache;
 			}
 			set {
-				_cache = value;
+				_planetCache = value;
+			}
+		}
+		
+		Frohgame.FrohgameCache _accountCache;
+		public Frohgame.FrohgameCache AccountCache {
+			get {
+				return this._accountCache;
+			}
+			set {
+				_accountCache = value;
 			}
 		}
 		
@@ -168,7 +179,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public string Version {
 			get {
-				string version = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.VersionRegex).Attributes["content"].Value;
+				string version = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.VersionRegex).Attributes["content"].Value;
 				Logger.Log (LoggingCategories.Parse, "Version: " + version);
 				return version;
 			}
@@ -180,7 +191,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public string Token {
 			get {
-				string token = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
+				string token = PlanetCache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
 				Logger.Log (LoggingCategories.Parse, "Token: " + (!string.IsNullOrEmpty (token) ? token : "None"));
 				return token;
 			}
@@ -191,8 +202,8 @@ namespace Frohgame.Core
 		/// </summary>
 		public int DarkMatter {
 			get {
-				string tmp = Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DarkMatterXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32 (tmp);
+				string tmp = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DarkMatterXPath).InnerText;
+				int Result = Utils.StringReplaceToInt32(tmp);
 				Logger.Log (LoggingCategories.Parse, "DarkMatter: " + Result.ToString ());
 				return Result;
 			}
@@ -204,7 +215,7 @@ namespace Frohgame.Core
 		public int CurrentPlanetId {
 			get {
 				return Utils.StringReplaceToInt32(
-					Cache[this.CurrentPlanet].LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
+					AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
 			}
 		}
 		
@@ -285,9 +296,12 @@ namespace Frohgame.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NagivateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
 			return 
-				this.Cache[CurrentPlanet].LastPageResult = 
-				this.Cache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
-				this.Cache[CurrentPlanet].LastIndexPageResult = 
+				this.AccountCache.LastPageResult =
+				this.AccountCache.LastIndexPageResult =
+				this.AccountCache.LastIndexPagesResults[(int)page] =
+				this.PlanetCache[CurrentPlanet].LastPageResult = 
+				this.PlanetCache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
+				this.PlanetCache[CurrentPlanet].LastIndexPageResult = 
 					HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
 		}
 
@@ -310,9 +324,12 @@ namespace Frohgame.Core
 			if(!IsLoggedIn(false))
 				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
 			
-			this.Cache[CurrentPlanet].LastPageResult = 
-				this.Cache[CurrentPlanet].LastIndexPagesResults[(int)IndexPages.Overview] = 
-				this.Cache[CurrentPlanet].LastIndexPageResult = 
+			this.AccountCache.LastPageResult =
+				this.AccountCache.LastIndexPageResult =
+				this.AccountCache.LastIndexPagesResults[(int)IndexPages.Overview] =
+				this.PlanetCache[CurrentPlanet].LastPageResult = 
+				this.PlanetCache[CurrentPlanet].LastIndexPagesResults[(int)IndexPages.Overview] = 
+				this.PlanetCache[CurrentPlanet].LastIndexPageResult = 
 					tmp;
 			
 			Logger.Log (LoggingCategories.NavigationAction, "Login was successfull");
@@ -326,7 +343,7 @@ namespace Frohgame.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.Cache[CurrentPlanet].LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
+			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NagivateToIndexPage (IndexPages.Resources);
 			} else {
@@ -364,7 +381,7 @@ namespace Frohgame.Core
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.Cache[CurrentPlanet].LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
+			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NagivateToIndexPage (IndexPages.Station);
 			} else {
@@ -505,7 +522,7 @@ namespace Frohgame.Core
 		public List<Planet> PlanetList {
 			get {
 				List<Planet> ret = new List<Planet> ();
-				HtmlAgilityPack.HtmlNodeCollection planetNodes = this.Cache[CurrentPlanet].LastIndexPageParser.DocumentNode.SelectNodes (_stringManager.PlanetListXPath);
+				HtmlAgilityPack.HtmlNodeCollection planetNodes = this.AccountCache.LastIndexPageParser.DocumentNode.SelectNodes (_stringManager.PlanetListXPath);
 
 				foreach (HtmlAgilityPack.HtmlNode planetNode in planetNodes) {
 					ret.Add (new Planet (planetNode, _stringManager, Logger));
@@ -522,9 +539,12 @@ namespace Frohgame.Core
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
 		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
-			this.Cache[CurrentPlanet].LastPageResult = 
-				this.Cache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
-				this.Cache[CurrentPlanet].LastIndexPageResult =
+			this.AccountCache.LastPageResult =
+				this.AccountCache.LastIndexPageResult =
+				this.AccountCache.LastIndexPagesResults[(int)page] =
+				this.PlanetCache[CurrentPlanet].LastPageResult = 
+				this.PlanetCache[CurrentPlanet].LastIndexPagesResults[(int)page] = 
+				this.PlanetCache[CurrentPlanet].LastIndexPageResult = 
 					this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
 		}
 
