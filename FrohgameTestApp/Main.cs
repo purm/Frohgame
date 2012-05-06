@@ -55,63 +55,65 @@ namespace FrohgameTestApp
 			
 			//session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
 			
-			try {
-				if(loadedSessionFromFile == true) {
-					if(!session.IsLoggedIn(true)) {
-						session.Login();
-					}
-				} else {
-					session.Login();	
+			if(loadedSessionFromFile == true) {
+				if(!session.IsLoggedIn(true)) {
+					session.Login();
 				}
-			} catch(Frohgame.Core.InvalidSessionException ex) {
-				Console.WriteLine("InvalidSessionException: " + ex.Message);
-				session.Login();
+			} else {
+				session.Login();	
 			}
 			
 			try {
-			
-			Console.WriteLine("VERSION: " + session.Version);
-			
-			string str = (
-                "METALL: " + session.CurrentPlanet.Metal + " - " + session.CurrentPlanet.MetalPerHour + "/h" +
-                " - KRISTALL: " + session.CurrentPlanet.Crystal + " - " + session.CurrentPlanet.CrystalPerHour + "/h" +
-                " - DEUTERIUM: " + session.CurrentPlanet.Deuterium + " - " + session.CurrentPlanet.DeuteriumPerHour + "/h" + 
-                " - DUNKLE MATERIE: " + session.DarkMatter + 
-                " - ENERGIE: " + session.CurrentPlanet.Energy);
-
-			Console.ForegroundColor = ConsoleColor.White;
-			Console.WriteLine (str);
-
-			Console.WriteLine ("PLANETEN:");
-			foreach (Frohgame.Core.Planet p in session.PlanetList) {
-				Console.WriteLine ("PLANET: " + p.Name + " - " + p.Id + " - [" + p.Coords.Galaxy.ToString () + ":" + p.Coords.SunSystem.ToString () + ":" + p.Coords.Place.ToString () + "]");
-			}
-
-			//Zeit bis xx Metall:
-			string time = Frohgame.Core.Mathemathics.CalcMaxTimeForRes (
-                session.CurrentPlanet.Metal,
-                session.CurrentPlanet.Crystal,
-                session.CurrentPlanet.Deuterium,
-                2000, 0, 0,
-                session.CurrentPlanet.MetalPerHour,
-                session.CurrentPlanet.CrystalPerHour,
-                session.CurrentPlanet.DeuteriumPerHour).ToString ();
-
-			//int time = FROHGAME.Core.Mathemathics.CalcTimeForRes(100000, session.Metal, session.MetalPerHour);
-
-			//test
-
-			Console.WriteLine ("TIME: " + time);
-        
-			session.NagivateToIndexPage(Frohgame.Core.IndexPages.Resources);
-			System.Collections.Generic.Dictionary<Frohgame.Core.SupplyBuildings, int> levels = session.CurrentPlanet.SupplyBuildingLevels;
-			
-			Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.SupplyBuildings.Metalmine]);
-			
-			} catch(Frohgame.Core.InvalidSessionException ex) {
+				Console.WriteLine("VERSION: " + session.Version);
+				
+				string str = (
+	                "METALL: " + session.CurrentPlanet.Metal + " - " + session.CurrentPlanet.MetalPerHour + "/h" +
+	                " - KRISTALL: " + session.CurrentPlanet.Crystal + " - " + session.CurrentPlanet.CrystalPerHour + "/h" +
+	                " - DEUTERIUM: " + session.CurrentPlanet.Deuterium + " - " + session.CurrentPlanet.DeuteriumPerHour + "/h" + 
+	                " - DUNKLE MATERIE: " + session.DarkMatter + 
+	                " - ENERGIE: " + session.CurrentPlanet.Energy);
+	
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.WriteLine (str);
+	
+				Console.WriteLine ("PLANETEN:");
+				foreach (Frohgame.Core.Planet p in session.PlanetList) {
+					Console.WriteLine ("PLANET: " + p.Name + " - " + p.Id + " - [" + p.Coords.Galaxy.ToString () + ":" + p.Coords.SunSystem.ToString () + ":" + p.Coords.Place.ToString () + "]");
+				}
+	
+				//Zeit bis xx Metall:
+				string time = Frohgame.Core.Mathemathics.CalcMaxTimeForRes (
+	                session.CurrentPlanet.Metal,
+	                session.CurrentPlanet.Crystal,
+	                session.CurrentPlanet.Deuterium,
+	                2000, 0, 0,
+	                session.CurrentPlanet.MetalPerHour,
+	                session.CurrentPlanet.CrystalPerHour,
+	                session.CurrentPlanet.DeuteriumPerHour).ToString ();
+	
+				//int time = FROHGAME.Core.Mathemathics.CalcTimeForRes(100000, session.Metal, session.MetalPerHour);
+	
+				//test
+	
+				Console.WriteLine ("TIME: " + time);
+	        
+				System.Collections.Generic.Dictionary<Frohgame.Core.StationBuildings, int> levels; 
+				
+				try {
+					levels = session.CurrentPlanet.StationBuildingLevels;	
+				} catch(Frohgame.Core.NoCacheDataException ex) {
+					Console.WriteLine("NoCacheDataException: " + ex.Message);
+					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Station);
+					levels = session.CurrentPlanet.StationBuildingLevels;
+				}
+				
+				Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.StationBuildings.RobotorFactory]);
+				
+				} catch(Frohgame.Core.InvalidSessionException ex) {
 				Console.WriteLine("InvalidSessionException: " + ex.Message);	
 			}
-				
+			
+			Console.WriteLine("Ende Gelände");
 			Console.ReadKey();
 			session.Serialize("session.dat", true);
 		}

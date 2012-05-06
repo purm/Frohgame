@@ -243,6 +243,53 @@ namespace Frohgame.Core
 			}
 		}
 		
+		/// <summary>
+		/// Liest die Level der Station-Gebäude aus.
+		/// </summary>
+		public Dictionary<StationBuildings, int> StationBuildingLevels {
+			get {
+				Dictionary<StationBuildings, int> buildingLevels = new Dictionary<StationBuildings, int>();
+				
+				if(Cache.LastIndexPagesParsers[(int)IndexPages.Station] == null) {
+					throw new NoCacheDataException("Keine Cachedaten für IndexPages.Station gefunden");
+				}				
+				
+				HtmlAgilityPack.HtmlNodeCollection col = Cache.LastIndexPagesParsers[(int)IndexPages.Station].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
+				
+				foreach(HtmlAgilityPack.HtmlNode building in col) {
+					int type = Convert.ToInt32(building.Attributes["ref"].Value);
+					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					switch(type) {
+					case (int)StationBuildings.AllianceDepository:
+						buildingLevels.Add(StationBuildings.AllianceDepository, level);
+						break;
+					case (int)StationBuildings.MissileSilo:
+						buildingLevels.Add(StationBuildings.MissileSilo, level);
+						break;
+					case (int)StationBuildings.NaniFactory:
+						buildingLevels.Add(StationBuildings.NaniFactory, level);
+						break;
+					case (int)StationBuildings.ResearchLaboratory:
+						buildingLevels.Add(StationBuildings.ResearchLaboratory, level);
+						break;
+					case (int)StationBuildings.RobotorFactory:
+						buildingLevels.Add(StationBuildings.RobotorFactory, level);
+						break;
+					case (int)StationBuildings.SpaceShipYard:
+						buildingLevels.Add(StationBuildings.SpaceShipYard, level);
+						break;
+					case (int)StationBuildings.TerraFormer:
+						buildingLevels.Add(StationBuildings.TerraFormer, level);
+						break;
+					default:
+						break;
+					}
+				}
+				
+				return buildingLevels;
+			}
+		}
+		
 		StringManager _stringManager;
 		Logger _logger;
 		

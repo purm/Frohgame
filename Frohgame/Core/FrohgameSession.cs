@@ -38,18 +38,22 @@ namespace Frohgame.Core
 		/// Wenn <c>true</c> wird die Overview Seite neu geladen, sonst wird aus dem cache geladen.
 		/// </param>
 		public bool IsLoggedIn(bool refresh) {
-			if(refresh)
-				NagivateToIndexPage(IndexPages.Overview);
-			
-			HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
-			if(node == null)
-				return false;
+			try {
+				if(refresh)
+					NagivateToIndexPage(IndexPages.Overview);
 				
-			if(node.Attributes["content"] == null) {
+				HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
+				if(node == null)
+					return false;
+					
+				if(node.Attributes["content"] == null) {
+					return false;	
+				}
+				
+				return true;
+			} catch(InvalidSessionException) {
 				return false;	
 			}
-			
-			return true;
 		}
 		
 		public Frohgame.Core.Mathemathics.Calculator Calculator = new Frohgame.Core.Mathemathics.Calculator();
