@@ -6,7 +6,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace FrohgameTestApp
 {
 	class MainClass
-	{				
+	{			
+		static Frohgame.Core.FrohgameSession session = null;
 		public static void Main (string[] args)
 		{
 			//SCHROTT, nicht nachmachen :D
@@ -29,7 +30,7 @@ namespace FrohgameTestApp
 			System.Xml.XmlNode accNode = xmlDoc.SelectSingleNode ("//account[@name]");
 			//SCHROTT ENDE
 			
-			Frohgame.Core.FrohgameSession session = null;
+			
 			bool loadedSessionFromFile = false;
 			
 			if(File.Exists("session.dat")) {
@@ -80,7 +81,7 @@ namespace FrohgameTestApp
 				Console.WriteLine ("PLANET: " + p.Name + " - " + p.Id + " - [" + p.Coords.Galaxy.ToString () + ":" + p.Coords.SunSystem.ToString () + ":" + p.Coords.Place.ToString () + "]");
 			}
 
-			//Zeit bis 100.000 Metall:
+			//Zeit bis xx Metall:
 			string time = Frohgame.Core.Mathemathics.CalcMaxTimeForRes (
                 session.CurrentPlanet.Metal,
                 session.CurrentPlanet.Crystal,
@@ -104,6 +105,7 @@ namespace FrohgameTestApp
 			Console.ReadKey();
 			session.Serialize("session.dat", true);
 		}
+
 		static void HttpHandler_OnNavigating (string targetUrl, string post)
 		{
 			string toLog = String.Format ("[DEBUG] [NAVIGATING] [{0}]: {1}", DateTime.Now.ToString (), targetUrl);

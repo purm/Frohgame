@@ -208,7 +208,7 @@ namespace Frohgame.Core
 
 			_stringManager = new StringManager (this._userName, this._userPassword, this._server);
 		}
-
+		
         #endregion
 
         #region Public Methods
@@ -230,11 +230,17 @@ namespace Frohgame.Core
 			Logger.Log (LoggingCategories.NavigationAction, "NagivateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
 			HttpResult tmp = HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
 			this.AccountCache.LastIndexPageResult = tmp;
+			
+			if(!this.IsLoggedIn(false)) {
+				throw new Frohgame.Core.InvalidSessionException("Session abgelaufen oder invalidiert");
+			}
+			
 			this.AccountCache.LastPageResult = tmp;
 			this.AccountCache.LastIndexPagesResults[(int)page] = tmp;
 			this.CurrentPlanet.Cache.LastPageResult = tmp;
 			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)page] =  tmp;
 			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
+			
 			return tmp;
 		}
 
@@ -254,16 +260,17 @@ namespace Frohgame.Core
 			HttpResult tmp = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
 			
 			this.AccountCache.LastIndexPageResult = tmp;
+			
+			if(!this.IsLoggedIn(false)) {
+				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
+			}
+			
 			this.AccountCache.LastPageResult = tmp;
 			this.AccountCache.LastIndexPagesResults[(int)IndexPages.Overview] = tmp;
 			this.CurrentPlanet.Cache.LastPageResult = tmp;
 			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)IndexPages.Overview] =  tmp;
 			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
-			
-			//Nach Logout Link suchen... falls vorhanden => login war erfolgreich, sonst nicht
-			if(!IsLoggedIn(false))
-				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
-			
+					
 			Logger.Log (LoggingCategories.NavigationAction, "Login was successfull");
 		}
 
@@ -472,10 +479,15 @@ namespace Frohgame.Core
 		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
 			HttpResult tmp = this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
-			this.AccountCache.LastPageResult = tmp;
 			this.AccountCache.LastIndexPageResult = tmp;
+			
+			if(!this.IsLoggedIn(false)) {
+				throw new Frohgame.Core.InvalidSessionException("Session abgelaufen oder invalidiert");
+			}
+			
+			this.AccountCache.LastPageResult = tmp;
 			this.AccountCache.LastIndexPagesResults[(int)page] = tmp;
-			this.CurrentPlanet.Cache.LastPageResult =  tmp;
+			this.CurrentPlanet.Cache.LastPageResult = tmp;
 			this.CurrentPlanet.Cache.LastIndexPagesResults[(int)page] =  tmp;
 			this.CurrentPlanet.Cache.LastIndexPageResult =  tmp;
 		}
