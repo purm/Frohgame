@@ -55,13 +55,17 @@ namespace FrohgameTestApp
 			
 			//session.Calculator.CalculateNeeds((int)FROHGAME.Core.SupplyBuildings.Metalmine,12);
 			
-			//macht natürlich erst sinn, wenn Loggedin fertig implementiert ist!
-			if(loadedSessionFromFile == true) {
-				if(!session.IsLoggedIn(true)) {
-					session.Login();
+			try {
+				if(loadedSessionFromFile == true) {
+					if(!session.IsLoggedIn(true)) {
+						session.Login();
+					}
+				} else {
+					session.Login();	
 				}
-			} else {
-				session.Login();	
+			} catch(Frohgame.Core.InvalidSessionException ex) {
+				Console.WriteLine("InvalidSessionException: " + ex.Message);
+				session.Login();
 			}
 			
 			Console.WriteLine("VERSION: " + session.Version);
