@@ -68,6 +68,8 @@ namespace FrohgameTestApp
 				session.Login();
 			}
 			
+			try {
+			
 			Console.WriteLine("VERSION: " + session.Version);
 			
 			string str = (
@@ -106,6 +108,10 @@ namespace FrohgameTestApp
 			
 			Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.SupplyBuildings.Metalmine]);
 			
+			} catch(Frohgame.Core.InvalidSessionException ex) {
+				Console.WriteLine("InvalidSessionException: " + ex.Message);	
+			}
+				
 			Console.ReadKey();
 			session.Serialize("session.dat", true);
 		}
