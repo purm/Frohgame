@@ -84,7 +84,22 @@ namespace Frohgame
 		static public int StringReplaceToInt32 (string StringToReplace)
 		{
 			if (!string.IsNullOrEmpty (StringToReplace)) {
-				return Convert.ToInt32 (new Regex ("([^0-9-+]*)").Replace (StringToReplace, string.Empty));
+				return Convert.ToInt32 (new Regex ("([^0-9-+]*)", RegexOptions.Singleline | RegexOptions.Multiline).Replace (StringToReplace, string.Empty));
+			} else { 
+				return 0; 
+			} 	
+		}
+		
+		/// <summary>
+		/// entfernt alle zeichen ausser zahlen und konvertiert zu int
+		/// </summary>
+		/// <param name="StringToReplace">Der String der durchsucht werden soll</param>
+		/// <param name="ReplacePattern">Die Pattern um die Zeichen zu finden um zu replacen</param>
+		/// <returns>Int32 or 0</returns>
+		static public int StringReplaceToInt32WithoutPlusAndMinus (string StringToReplace)
+		{
+			if (!string.IsNullOrEmpty (StringToReplace)) {
+				return Convert.ToInt32 (new Regex ("([^0-9]*)", RegexOptions.Singleline | RegexOptions.Multiline).Replace (StringToReplace, string.Empty));
 			} else { 
 				return 0; 
 			} 	

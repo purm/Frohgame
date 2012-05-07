@@ -36,7 +36,7 @@ namespace FrohgameTestApp
 			if(File.Exists("session.dat")) {
 				Console.WriteLine("Session von Datei laden? (Yes/No)");
 				if(Console.ReadLine().ToUpper() == "YES") {
-					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat", true);
+					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat", false);
 					loadedSessionFromFile = true;
 				}
 			}
@@ -107,7 +107,19 @@ namespace FrohgameTestApp
 					levels = session.CurrentPlanet.StationBuildingLevels;
 				}
 				
-				Console.WriteLine("Metallmine level: " + levels[Frohgame.Core.StationBuildings.RobotorFactory]);
+				Console.WriteLine("RobotorFactory level: " + levels[Frohgame.Core.StationBuildings.RobotorFactory]);
+				
+				System.Collections.Generic.Dictionary<Frohgame.Core.Researches, int> levels2; 
+				
+				try {
+					levels2 = session.CurrentPlanet.ResearchLevels;	
+				} catch(Frohgame.Core.NoCacheDataException ex) {
+					Console.WriteLine("NoCacheDataException: " + ex.Message);
+					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Research);
+					levels2 = session.CurrentPlanet.ResearchLevels;
+				}
+				
+				Console.WriteLine("HyperRoomTech level: " + levels2[Frohgame.Core.Researches.HyperRoomTech]);
 				
 				} catch(Frohgame.Core.InvalidSessionException ex) {
 				Console.WriteLine("InvalidSessionException: " + ex.Message);	
@@ -115,7 +127,7 @@ namespace FrohgameTestApp
 			
 			Console.WriteLine("Ende Gelände");
 			Console.ReadKey();
-			session.Serialize("session.dat", true);
+			session.Serialize("session.dat", false);
 		}
 
 		static void HttpHandler_OnNavigating (string targetUrl, string post)

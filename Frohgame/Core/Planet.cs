@@ -57,7 +57,7 @@ namespace Frohgame.Core
 		public int Metal {
 			get {
 				string metalString = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.MetalXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32 (metalString);
+				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (metalString);
 				_logger.Log (LoggingCategories.Parse, "Metal: " + Result.ToString ());
 				return Result;
 			}
@@ -72,7 +72,7 @@ namespace Frohgame.Core
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.MetalPerHourRegex);
 				int Result = 0;
 				if (!string.IsNullOrEmpty (tmp1))
-					Result = Utils.StringReplaceToInt32 (tmp1);
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp1);
 
 				_logger.Log (LoggingCategories.Parse, "Metal per Hour: " + Result.ToString ());
 				return Result;
@@ -85,7 +85,7 @@ namespace Frohgame.Core
 		public int Crystal {
 			get {
 				string crystalString = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.CrystalXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32 (crystalString);
+				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (crystalString);
 				_logger.Log (LoggingCategories.Parse, "Crystal: " + Result.ToString ());
 				return Result;
 			}
@@ -100,7 +100,7 @@ namespace Frohgame.Core
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.CrystalPerHourRegex);
 				int Result = 0;
 				if (!string.IsNullOrEmpty (tmp1))
-					Result = Utils.StringReplaceToInt32 (tmp1);
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp1);
 
 				_logger.Log (LoggingCategories.Parse, "Crystal per Hour: " + Result.ToString ());
 				return Result;
@@ -113,7 +113,7 @@ namespace Frohgame.Core
 		public int Deuterium {
 			get {
 				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DeuteriumXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32 (tmp);
+				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
 				_logger.Log (LoggingCategories.Parse, "Deuterium: " + Result.ToString ());
 				return Result;
 			}
@@ -128,7 +128,7 @@ namespace Frohgame.Core
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.DeuteriumPerHourRegex);
 				int Result = 0;
 				if (!string.IsNullOrEmpty (tmp1))
-					Result = Utils.StringReplaceToInt32 (tmp1);
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp1);
 
 				_logger.Log (LoggingCategories.Parse, "Deuterium per Hour: " + Result.ToString ());
 				return Result;
@@ -199,7 +199,7 @@ namespace Frohgame.Core
 				
 				foreach(HtmlAgilityPack.HtmlNode building in col) {
 					int type = Convert.ToInt32(building.Attributes["ref"].Value);
-					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					int level = Utils.StringReplaceToInt32WithoutPlusAndMinus(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
 					switch(type) {
 					case (int)SupplyBuildings.CrystalBox:
 						buildingLevels.Add(SupplyBuildings.CrystalBox, level);
@@ -258,7 +258,7 @@ namespace Frohgame.Core
 				
 				foreach(HtmlAgilityPack.HtmlNode building in col) {
 					int type = Convert.ToInt32(building.Attributes["ref"].Value);
-					int level = Utils.StringReplaceToInt32(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					int level = Utils.StringReplaceToInt32WithoutPlusAndMinus(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
 					switch(type) {
 					case (int)StationBuildings.AllianceDepository:
 						buildingLevels.Add(StationBuildings.AllianceDepository, level);
@@ -280,6 +280,80 @@ namespace Frohgame.Core
 						break;
 					case (int)StationBuildings.TerraFormer:
 						buildingLevels.Add(StationBuildings.TerraFormer, level);
+						break;
+					default:
+						break;
+					}
+				}
+				
+				return buildingLevels;
+			}
+		}
+		
+		/// <summary>
+		/// Liest die Level der Forschungen aus
+		/// </summary>
+		public Dictionary<Researches, int> ResearchLevels {
+			get {
+				Dictionary<Researches, int> buildingLevels = new Dictionary<Researches, int>();
+				
+				if(Cache.LastIndexPagesParsers[(int)IndexPages.Research] == null) {
+					throw new NoCacheDataException("Keine Cachedaten für IndexPages.Research gefunden");
+				}				
+				
+				HtmlAgilityPack.HtmlNodeCollection col = Cache.LastIndexPagesParsers[(int)IndexPages.Research].DocumentNode.SelectNodes(_stringManager.BuildingResearchXpath);
+				
+				foreach(HtmlAgilityPack.HtmlNode building in col) {
+					int type = Convert.ToInt32(building.Attributes["ref"].Value);
+					int level = Utils.StringReplaceToInt32WithoutPlusAndMinus(building.SelectSingleNode(_stringManager.BuildingResearchLevelXPath).InnerText);
+					switch(type) {
+					case (int)Researches.ArmorTech:
+						buildingLevels.Add(Researches.ArmorTech, level);
+						break;
+					case (int)Researches.AstroPhysics:
+						buildingLevels.Add(Researches.AstroPhysics, level);
+						break;
+					case (int)Researches.BurningEngine:
+						buildingLevels.Add(Researches.BurningEngine, level);
+						break;
+					case (int)Researches.ComputerTech:
+						buildingLevels.Add(Researches.ComputerTech, level);
+						break;
+					case (int)Researches.EnergyTech:
+						buildingLevels.Add(Researches.EnergyTech, level);
+						break;
+					case (int)Researches.GravitonResearch:
+						buildingLevels.Add(Researches.GravitonResearch, level);
+						break;
+					case (int)Researches.HyperRoomEngine:
+						buildingLevels.Add(Researches.HyperRoomEngine, level);
+						break;
+					case (int)Researches.HyperRoomTech:
+						buildingLevels.Add(Researches.HyperRoomTech, level);
+						break;
+					case (int)Researches.ImpulsEngine:
+						buildingLevels.Add(Researches.ImpulsEngine, level);
+						break;
+					case (int)Researches.IntergalacticNetwork:
+						buildingLevels.Add(Researches.IntergalacticNetwork, level);
+						break;
+					case (int)Researches.IonenTech:
+						buildingLevels.Add(Researches.IonenTech, level);
+						break;
+					case (int)Researches.LaserTech:
+						buildingLevels.Add(Researches.LaserTech, level);
+						break;
+					case (int)Researches.PlasmaTech:
+						buildingLevels.Add(Researches.PlasmaTech, level);
+						break;
+					case (int)Researches.ShieldTech:
+						buildingLevels.Add(Researches.ShieldTech, level);
+						break;
+					case (int)Researches.SpyingTech:
+						buildingLevels.Add(Researches.SpyingTech, level);
+						break;
+					case (int)Researches.WeaponTech:
+						buildingLevels.Add(Researches.WeaponTech, level);
 						break;
 					default:
 						break;
@@ -316,7 +390,7 @@ namespace Frohgame.Core
 
 			//Link auslesen:
 			string linktToPlanet = planetNode.SelectSingleNode (strings.PlanetLinkXPath).Attributes ["href"].Value;
-			this._id = Utils.StringReplaceToInt32 (Utils.SimpleRegex (linktToPlanet, strings.PlanetIDRegex));
+			this._id = Utils.StringReplaceToInt32WithoutPlusAndMinus (Utils.SimpleRegex (linktToPlanet, strings.PlanetIDRegex));
 		}
 	}
 }

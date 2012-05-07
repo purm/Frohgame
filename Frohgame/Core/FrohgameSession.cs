@@ -140,7 +140,7 @@ namespace Frohgame.Core
 		public int DarkMatter {
 			get {
 				string tmp = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DarkMatterXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32(tmp);
+				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus(tmp);
 				Logger.Log (LoggingCategories.Parse, "DarkMatter: " + Result.ToString ());
 				return Result;
 			}
@@ -151,7 +151,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public int CurrentPlanetId {
 			get {
-				return Utils.StringReplaceToInt32(
+				return Utils.StringReplaceToInt32WithoutPlusAndMinus(
 					AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
 			}
 		}
@@ -388,7 +388,7 @@ namespace Frohgame.Core
 		/// <returns>Level</returns>
 		private int GetBuildingLevelFromAjax (HtmlAgilityPack.HtmlDocument ajaxHTML)
 		{
-			int Result = Utils.StringReplaceToInt32 (ajaxHTML.DocumentNode.SelectSingleNode (_stringManager.BuildCurLevelXPath).InnerText);
+			int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (ajaxHTML.DocumentNode.SelectSingleNode (_stringManager.BuildCurLevelXPath).InnerText);
 			Logger.Log (LoggingCategories.Parse, "GetBuildingLevelFromAjax: " + Result.ToString ());
 			return Result;
 		}
@@ -403,7 +403,7 @@ namespace Frohgame.Core
 			string tmp = Utils.SimpleRegex (ajaxHTML, _stringManager.NeededMetalRegex);
 			int Result = 0;
 			if (!string.IsNullOrEmpty (tmp)) {
-				Result = Utils.StringReplaceToInt32 (tmp);
+				Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
 			}
 
 			Logger.Log (LoggingCategories.Parse, "GetMetalFromAjax: " + Result.ToString ());
@@ -420,7 +420,7 @@ namespace Frohgame.Core
 			string tmp = Utils.SimpleRegex (ajaxHTML, _stringManager.NeededCrystalRegex);
 			int Result = 0;
 			if (!string.IsNullOrEmpty (tmp)) {
-				Result = Utils.StringReplaceToInt32 (tmp);
+				Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
 			}
 
 			Logger.Log (LoggingCategories.Parse, "GetCrystalFromAjax: " + Result.ToString ());
@@ -437,7 +437,7 @@ namespace Frohgame.Core
 			string tmp = Utils.SimpleRegex (ajaxHTML, _stringManager.NeededDeuteriumRegex);
 			int Result = 0;
 			if (!string.IsNullOrEmpty (tmp)) {
-				Result = Utils.StringReplaceToInt32 (tmp);
+				Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
 			}
 
 			Logger.Log (LoggingCategories.Parse, "GetDeuteriumFromAjax: " + Result.ToString ());
@@ -507,27 +507,31 @@ namespace Frohgame.Core
 		/// Dateipfad
 		/// </param>
 		public void Serialize(string path, bool encrypt) {
-			//TODO encryption optional machen
 			FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-			RijndaelManaged RMCrypto = new RijndaelManaged();
-			byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
-			byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
-			
-			byte[] iv = Utils.Combine(ivv, ivv);
-			
-			RMCrypto.BlockSize = 128;
-			RMCrypto.KeySize = 128;
-			RMCrypto.IV = iv;
-
-			RMCrypto.Key = hwID;
-			
-			CryptoStream crStream = new CryptoStream(stream,
-   				RMCrypto.CreateEncryptor(), CryptoStreamMode.Write);
-
 			BinaryFormatter formatter =  new BinaryFormatter();
-			formatter.Serialize(crStream, this);
-
-			crStream.Close();
+			if(encrypt) {
+				RijndaelManaged RMCrypto = new RijndaelManaged();
+				byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
+				byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
+				
+				byte[] iv = Utils.Combine(ivv, ivv);
+				
+				RMCrypto.BlockSize = 128;
+				RMCrypto.KeySize = 128;
+				RMCrypto.IV = iv;
+	
+				RMCrypto.Key = hwID;
+				
+				CryptoStream crStream = new CryptoStream(stream,
+	   				RMCrypto.CreateEncryptor(), CryptoStreamMode.Write);
+	
+				formatter.Serialize(crStream, this);
+	
+				crStream.Close();
+			}
+			else {
+				formatter.Serialize(stream, this);
+			}
 			stream.Close();
 		}
 		
@@ -535,24 +539,29 @@ namespace Frohgame.Core
 		/// Lädt eine Session aus einer Datei
 		/// </summary>
 		public static FrohgameSession Deserialize(string path, bool encrypted) {
-			//TODO encryption optional machen
 			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-			RijndaelManaged RMCrypto = new RijndaelManaged();
-			byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
-			byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
-			
-			byte[] iv = Utils.Combine(ivv, ivv);
-			
-			RMCrypto.BlockSize = 128;
-			RMCrypto.KeySize = 128;
-			RMCrypto.IV = iv;
-			RMCrypto.Key = hwID;
-			
-			CryptoStream crStream = new CryptoStream(stream,
-			    RMCrypto.CreateDecryptor(), CryptoStreamMode.Read);
-			
 			BinaryFormatter formatter =  new BinaryFormatter();
-			object obj = formatter.Deserialize(crStream);
+			object obj;
+			if(encrypted) {
+				RijndaelManaged RMCrypto = new RijndaelManaged();
+				byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
+				byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
+				
+				byte[] iv = Utils.Combine(ivv, ivv);
+				
+				RMCrypto.BlockSize = 128;
+				RMCrypto.KeySize = 128;
+				RMCrypto.IV = iv;
+				RMCrypto.Key = hwID;
+				
+				CryptoStream crStream = new CryptoStream(stream,
+				    RMCrypto.CreateDecryptor(), CryptoStreamMode.Read);
+				
+				obj = formatter.Deserialize(crStream);
+			}
+			else {
+				obj = formatter.Deserialize(stream);
+			}
 			
 			stream.Close();
 			

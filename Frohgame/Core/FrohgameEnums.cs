@@ -53,6 +53,25 @@ namespace Frohgame.Core {
 		EspionageProbe = 210,
 		SolarSatellite = 212	
 	}
+	
+	public enum Researches {
+		EnergyTech = 113,
+		LaserTech = 120,
+		IonenTech = 121,
+		HyperRoomTech = 114,
+		PlasmaTech = 122,
+		BurningEngine = 115,
+		ImpulsEngine = 117,
+		HyperRoomEngine = 118,
+		SpyingTech = 106,
+		ComputerTech = 108,
+		AstroPhysics = 124,
+		IntergalacticNetwork = 123,
+		GravitonResearch = 199,
+		WeaponTech = 109,
+		ShieldTech = 110,
+		ArmorTech = 111,
+	}
 
     public enum IndexPages {
         Overview,
