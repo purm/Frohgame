@@ -372,7 +372,7 @@ namespace Frohgame
 			_indexPageNames.Add (IndexPages.Resources, "resources");
 			_indexPageNames.Add (IndexPages.Shipyard, "shipyard");
 			_indexPageNames.Add (IndexPages.Station, "station");
-			_indexPageNames.Add (IndexPages.Trader, "trader");
+			_indexPageNames.Add (IndexPages.Trader, "traderOverview");
 		}
 
         #endregion
