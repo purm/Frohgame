@@ -93,7 +93,22 @@ namespace FrohgameTestApp
 	
 				//int time = FROHGAME.Core.Mathemathics.CalcTimeForRes(100000, session.Metal, session.MetalPerHour);
 	
-				//test
+				//TEST:
+//				foreach(Frohgame.Core.Planet p in session.PlanetList) {
+//					if(session.CurrentPlanet != p) {
+//						session.ChangeToPlanet(Frohgame.Core.IndexPages.Overview, p);
+//					}
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Trader);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Alliance);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Changelog);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Defense);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Fleet1);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Galaxy);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Research);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Premium);
+//					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Shipyard);
+//					
+//				}
 	
 				Console.WriteLine ("TIME: " + time);
 	        
@@ -121,9 +136,11 @@ namespace FrohgameTestApp
 				
 				Console.WriteLine("HyperRoomTech level: " + levels2[Frohgame.Core.Researches.HyperRoomTech]);
 				
-				} catch(Frohgame.Core.InvalidSessionException ex) {
-				Console.WriteLine("InvalidSessionException: " + ex.Message);	
+				} 
+			catch(Frohgame.Core.InvalidSessionException ex) {
+				Console.WriteLine("InvalidSessionException: " + ex.Message);
 			}
+			
 			
 			Console.WriteLine("Ende Gelände");
 			Console.ReadKey();
@@ -146,7 +163,7 @@ namespace FrohgameTestApp
 			Console.WriteLine (toLog);
 			System.IO.File.AppendAllText ("log.txt", toLog + Environment.NewLine);
 
-			int sleep = Frohgame.Utils.Random (2000, 5000);
+			int sleep = Frohgame.Utils.Random (1000, 3000);
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine ("Schlafen: " + sleep.ToString () + "ms");
 			Thread.Sleep (sleep);
