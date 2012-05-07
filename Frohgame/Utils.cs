@@ -90,6 +90,14 @@ namespace Frohgame
 			} 	
 		}
 		
+		static public string ReplaceEverythingsExceptNumbers(string str) {
+			if (!string.IsNullOrEmpty (str)) {
+				return new Regex ("([^0-9]*)", RegexOptions.Singleline | RegexOptions.Multiline).Replace (str, string.Empty);
+			} else { 
+				return null; 
+			} 	
+		}
+		
 		/// <summary>
 		/// entfernt alle zeichen ausser zahlen und konvertiert zu int
 		/// </summary>

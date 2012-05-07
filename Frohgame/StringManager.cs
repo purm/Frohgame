@@ -280,6 +280,12 @@ namespace Frohgame
 				return ".//span[@class='planet-koords']";
 			}
 		}
+		
+		internal string MoonXPath {
+			get {
+				return ".//a[2]";	
+			}
+		}
 
 		/// <summary>
 		/// Regex zum parsen der koordinaten eines planeten
@@ -302,7 +308,7 @@ namespace Frohgame
 		/// <summary>
 		/// Regex zum parsen der ID aus dem Link eine planeten
 		/// </summary>
-		internal string PlanetIDRegex {
+		internal string MoonOrPlanetIDRegex {
 			get {
 				return "cp=([0-9]+)";
 			}

@@ -147,15 +147,28 @@ namespace Frohgame.Core
 			}
 		}
 		
-		int _id;
+		string _id;
 		/// <summary>
 		/// Ogamespezifische ID, wird unter anderem zum wechseln zum planeten benutzt
 		/// </summary>
-		public int Id {
+		public string Id {
 			get { return _id; }
 			set { _id = value; }
 		}
-
+		
+		string _moonId;
+		/// <summary>
+		/// ID vom Mond, falls kein Mond vorhanden => empty string
+		/// </summary>
+		public string MoonId {
+			get {
+				return this._moonId;
+			}
+			set {
+				_moonId = value;
+			}
+		}
+		
 		PlanetPosition _coords = new PlanetPosition ();
 		/// <summary>
 		/// Koordinaten des Planeten
@@ -390,7 +403,18 @@ namespace Frohgame.Core
 
 			//Link auslesen:
 			string linktToPlanet = planetNode.SelectSingleNode (strings.PlanetLinkXPath).Attributes ["href"].Value;
-			this._id = Utils.StringReplaceToInt32WithoutPlusAndMinus (Utils.SimpleRegex (linktToPlanet, strings.PlanetIDRegex));
+			this._id = Utils.ReplaceEverythingsExceptNumbers (Utils.SimpleRegex (linktToPlanet, strings.MoonOrPlanetIDRegex));
+			
+			//Mond?
+			HtmlAgilityPack.HtmlNode moonNode = planetNode.SelectSingleNode(_stringManager.MoonXPath);
+			if(moonNode != null) {
+				string linkToMoon = moonNode.Attributes["href"].Value;
+				this._moonId = Utils.ReplaceEverythingsExceptNumbers(Utils.SimpleRegex(linkToMoon, strings.MoonOrPlanetIDRegex));
+				Console.WriteLine("There is a moon, buddy and his id is: " + _moonId.ToString());
+			}
+			else {
+				this._moonId = string.Empty;	
+			}
 		}
 	}
 }

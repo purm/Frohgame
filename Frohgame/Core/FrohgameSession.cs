@@ -149,9 +149,9 @@ namespace Frohgame.Core
 		/// <summary>
 		/// ID (aus den metadaten) vom aktuellen planeten
 		/// </summary>
-		public int CurrentPlanetId {
+		public string CurrentPlanetId {
 			get {
-				return Utils.StringReplaceToInt32WithoutPlusAndMinus(
+				return Utils.ReplaceEverythingsExceptNumbers(
 					AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
 			}
 		}
@@ -161,7 +161,7 @@ namespace Frohgame.Core
 		/// </summary>
 		public Planet CurrentPlanet {
 		 	get {
-				int currentPlanetId  = CurrentPlanetId;
+				string currentPlanetId  = CurrentPlanetId;
 				foreach(Planet p in this.CachedPlanetList) {
 					if(p.Id == currentPlanetId)	{
 						return p;	
@@ -216,14 +216,6 @@ namespace Frohgame.Core
         #endregion
 
         #region Public Methods
-		
-		public void SetLastIndexPage(IndexPages page, HttpResult res) {
-			if(res == null) {
-				throw new ArgumentException("null", "res");	
-			}
-			
-			
-		}
 		
 		/// <summary>
 		/// Navigiert zu einer Ogame-Standard Seite
