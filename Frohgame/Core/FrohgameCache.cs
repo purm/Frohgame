@@ -15,7 +15,7 @@ namespace Frohgame
 //			this._lastIndexPagesResults = new ObservableCollection<HttpResult>();			
 			this.LastIndexPagesResults.CollectionChanged += HandleLastIndexPagesResultshandleCollectionChanged;
 			
-			int maxEnum = (int)Enum.GetValues(typeof(IndexPages)).Cast<IndexPages>().Max();
+			int maxEnum = 12 + 1;
 			for(int i = 0; i < maxEnum; i++) {
 				LastIndexPagesParsers.Add(null);
 				LastIndexPagesResults.Add(null);
@@ -142,7 +142,7 @@ namespace Frohgame
 				if(this._lastIndexPagesParsers == null) {
 					this._lastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
 					
-					int maxEnum = (int)Enum.GetValues(typeof(IndexPages)).Cast<IndexPages>().Max();
+					int maxEnum = 12 + 1;
 					
 					for(int i = 0; i < maxEnum; i++) {
 						_lastIndexPagesParsers.Add(null);
