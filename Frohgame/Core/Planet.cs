@@ -126,8 +126,27 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Crystal {
 			get {
-				string crystalString = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.CrystalXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (crystalString);
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode spanNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (this._stringManager.CrystalXPath);
+				if(spanNode == null) {
+					throw new ParsingException("Crystal: span-Knoten nicht gefunden");
+				}
+				
+				string crystalString = spanNode.InnerText;
+				if(string.IsNullOrEmpty(crystalString)) {
+					throw new ParsingException("Crystal: span-Knoten Inhalt ist leer");	
+				}
+				
+				int Result;
+				try {
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (crystalString);
+				} catch (FormatException) {
+					throw new ParsingException("Crystal: span-Knoten Inhalt ist keine Zahl");	
+				}
+				
 				_logger.Log (LoggingCategories.Parse, "Crystal: " + Result.ToString ());
 				return Result;
 			}
@@ -138,11 +157,34 @@ namespace Frohgame.Core
 		/// </summary>
 		public int CrystalPerHour {
 			get {
-				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.CrystalPerHourXPath).Attributes ["title"].Value;
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");
+				}
+				
+				HtmlAgilityPack.HtmlNode liNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.CrystalPerHourXPath);
+				if(liNode == null) {
+					throw new ParsingException("CrystalPerHour: li-Knoten konnte nicht gefunden werden");	
+				}
+				
+				HtmlAgilityPack.HtmlAttribute titleAttribute = liNode.Attributes ["title"];
+				if(titleAttribute == null) {
+					throw new ParsingException("CrystalPerHour: title-Attribut vom li-Knoten konnte nicht gefunden werden");	
+				}
+				
+				string tmp = titleAttribute.Value;
+				if(string.IsNullOrEmpty(tmp)) {
+					throw new ParsingException("CrystalPerHour: title-Attribut vom li-Knoten ist leer");	
+				}
+				
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.CrystalPerHourRegex);
 				int Result = 0;
+				
+				try {
 				if (!string.IsNullOrEmpty (tmp1))
 					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp1);
+				} catch(FormatException) {
+					throw new ParsingException("CrystalPerHour: RegexResult ist keine Zahl");	
+				}
 
 				_logger.Log (LoggingCategories.Parse, "Crystal per Hour: " + Result.ToString ());
 				return Result;
@@ -154,8 +196,27 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Deuterium {
 			get {
-				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DeuteriumXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode spanNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (this._stringManager.DeuteriumXPath);
+				if(spanNode == null) {
+					throw new ParsingException("Deuterium: span-Knoten nicht gefunden");
+				}
+				
+				string deuteriumString = spanNode.InnerText;
+				if(string.IsNullOrEmpty(deuteriumString)) {
+					throw new ParsingException("Deuterium: span-Knoten Inhalt ist leer");	
+				}
+				
+				int Result;
+				try {
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (deuteriumString);
+				} catch (FormatException) {
+					throw new ParsingException("Deuterium: span-Knoten Inhalt ist keine Zahl");	
+				}
+				
 				_logger.Log (LoggingCategories.Parse, "Deuterium: " + Result.ToString ());
 				return Result;
 			}
@@ -166,11 +227,34 @@ namespace Frohgame.Core
 		/// </summary>
 		public int DeuteriumPerHour {
 			get {
-				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DeuteriumPerHourXPath).Attributes ["title"].Value;
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");
+				}
+				
+				HtmlAgilityPack.HtmlNode liNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DeuteriumPerHourXPath);
+				if(liNode == null) {
+					throw new ParsingException("DeuteriumPerHour: li-Knoten konnte nicht gefunden werden");	
+				}
+				
+				HtmlAgilityPack.HtmlAttribute titleAttribute = liNode.Attributes ["title"];
+				if(titleAttribute == null) {
+					throw new ParsingException("DeuteriumPerHour: title-Attribut vom li-Knoten konnte nicht gefunden werden");	
+				}
+				
+				string tmp = titleAttribute.Value;
+				if(string.IsNullOrEmpty(tmp)) {
+					throw new ParsingException("DeuteriumPerHour: title-Attribut vom li-Knoten ist leer");	
+				}
+				
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.DeuteriumPerHourRegex);
 				int Result = 0;
+				
+				try {
 				if (!string.IsNullOrEmpty (tmp1))
 					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp1);
+				} catch(FormatException) {
+					throw new ParsingException("DeuteriumPerHour: RegexResult ist keine Zahl");	
+				}
 
 				_logger.Log (LoggingCategories.Parse, "Deuterium per Hour: " + Result.ToString ());
 				return Result;
