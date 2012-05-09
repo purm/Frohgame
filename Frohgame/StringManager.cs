@@ -42,7 +42,7 @@ namespace Frohgame
 		/// <summary>
 		/// Regex zum auslesen der 'Ogame'-Version aus den Metadaten
 		/// </summary>
-		internal string VersionRegex {
+		internal string VersionXPath {
 			get {
 				return "//meta[@name='ogame-version']";
 			}
