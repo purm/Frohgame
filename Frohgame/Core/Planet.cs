@@ -87,11 +87,34 @@ namespace Frohgame.Core
 		/// </summary>
 		public int MetalPerHour {
 			get {
-				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.MetalPerHourXPath).Attributes ["title"].Value;
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");
+				}
+				
+				HtmlAgilityPack.HtmlNode liNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.MetalPerHourXPath);
+				if(liNode == null) {
+					throw new ParsingException("MetalPerHour: li-Knoten konnte nicht gefunden werden");	
+				}
+				
+				HtmlAgilityPack.HtmlAttribute titleAttribute = liNode.Attributes ["title"];
+				if(titleAttribute == null) {
+					throw new ParsingException("MetalPerHour: title-Attribut vom li-Knoten konnte nicht gefunden werden");	
+				}
+				
+				string tmp = titleAttribute.Value;
+				if(string.IsNullOrEmpty(tmp)) {
+					throw new ParsingException("MetalPerHour: title-Attribut vom li-Knoten ist leer");	
+				}
+				
 				string tmp1 = Utils.SimpleRegex (tmp, _stringManager.MetalPerHourRegex);
 				int Result = 0;
+				
+				try {
 				if (!string.IsNullOrEmpty (tmp1))
 					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp1);
+				} catch(FormatException) {
+					throw new ParsingException("MetalPerHour: RegexResult ist keine Zahl");	
+				}
 
 				_logger.Log (LoggingCategories.Parse, "Metal per Hour: " + Result.ToString ());
 				return Result;
