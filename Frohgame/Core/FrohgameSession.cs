@@ -98,7 +98,16 @@ namespace Frohgame.Core
 					throw new ParsingException("UnreadMessagesCount: Span-Knoten wurde nicht gefunden");
 				}
 				
-				return Utils.StringReplaceToInt32WithoutPlusAndMinus(span.InnerText);
+				string innerText = span.InnerText;
+				if(string.IsNullOrEmpty(innerText)) {
+					throw new ParsingException("UnreadMessagesCount: Span-Knoten Inhalt ist leer");	
+				}
+				
+				try {
+					return Utils.StringReplaceToInt32WithoutPlusAndMinus(span.InnerText);
+				} catch(FormatException) {
+					throw new ParsingException("UnreadMessagesCount: Span-Knoten Inhalt ist keine Zahl");
+				}
 			}
 		}
 		
@@ -396,6 +405,9 @@ namespace Frohgame.Core
 		public void UpgradeBuilding(SupplyBuildings building)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
+			if(this.AccountCache.LastIndexPageResult == null) {
+				throw new NoCacheDataException("AccountCache.LastIndexPageResult == null");
+			}
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
 			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != this.StringManager.GetIndexPageUrl (IndexPages.Resources)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
@@ -434,6 +446,9 @@ namespace Frohgame.Core
 		public void UpgradeBuilding(StationBuildings building)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
+			if(this.AccountCache.LastIndexPageResult == null) {
+				throw new NoCacheDataException("AccountCache.LastIndexPageResult == null");
+			}
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
 			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != this.StringManager.GetIndexPageUrl (IndexPages.Station)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
@@ -576,8 +591,15 @@ namespace Frohgame.Core
 		public List<Planet> PlanetList {
 			get {
 				List<Planet> ret = new List<Planet> ();
+				if(AccountCache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("AccountCache.LastIndexPageParser == null");	
+				}
+				
 				HtmlAgilityPack.HtmlNodeCollection planetNodes = this.AccountCache.LastIndexPageParser.DocumentNode.SelectNodes (this.StringManager.PlanetListXPath);
-
+				if(planetNodes == null) {
+					throw new ParsingException("PlanetList: Div-Knoten nicht gefunden");
+				}
+				
 				foreach (HtmlAgilityPack.HtmlNode planetNode in planetNodes) {
 					ret.Add(new Planet (planetNode, this.StringManager, Logger));
 				}
