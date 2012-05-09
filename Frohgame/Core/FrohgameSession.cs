@@ -220,8 +220,26 @@ namespace Frohgame.Core
 		/// </summary>
 		public int DarkMatter {
 			get {
-				string tmp = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.DarkMatterXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus(tmp);
+				if(AccountCache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("AccountCache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode spanNode = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(this.StringManager.DarkMatterXPath);
+				if(spanNode == null) {
+					throw new ParsingException("DarkMatter: Span-Knoten konnte nicht gefunden werden");	
+				}
+				
+				string tmp = spanNode.InnerText;
+				if(string.IsNullOrEmpty(tmp)) {
+					throw new ParsingException("DarkMatter: Span-Knoten ist leer");
+				}
+				
+				int Result;
+				try {
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus(tmp);
+				} catch (FormatException) {
+					throw new ParsingException("Darkmatter: Span-Knoten Inhalt ist keine Zahl");
+				}
 				Logger.Log (LoggingCategories.Parse, "DarkMatter: " + Result.ToString ());
 				return Result;
 			}
