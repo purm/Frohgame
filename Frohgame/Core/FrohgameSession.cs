@@ -250,8 +250,26 @@ namespace Frohgame.Core
 		/// </summary>
 		public string CurrentPlanetId {
 			get {
-				return Utils.ReplaceEverythingsExceptNumbers(
-					AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.CurrentPlanetIdXPath).Attributes["content"].Value);
+				if(AccountCache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("AccountCache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode metaNode = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(this.StringManager.CurrentPlanetIdXPath);
+				if(metaNode == null) {
+					throw new ParsingException("CurrentPlanetId: Meta-Knoten wurde nicht gefunden");	
+				}
+				
+				HtmlAgilityPack.HtmlAttribute contentAttribute = metaNode.Attributes["content"];
+				if(contentAttribute == null) {
+					throw new ParsingException("CurrentPlanetId: content-Attribut vom Meta-Knoten konnte nicht gefuden werden");
+				}
+				
+				string content = contentAttribute.Value;
+				if(string.IsNullOrEmpty(content)) {
+					throw new ParsingException("CurrentPlanetId: content-Attribut vom Meta-Knoten ist leer");	
+				}
+				
+				return Utils.ReplaceEverythingsExceptNumbers(content);
 			}
 		}
 		
@@ -260,13 +278,15 @@ namespace Frohgame.Core
 		/// </summary>
 		public Planet CurrentPlanet {
 		 	get {
-				string currentPlanetId  = CurrentPlanetId;
-				foreach(Planet p in this.CachedPlanetList) {
-					if(p.Id == currentPlanetId)	{
-						return p;	
+				string currentPlanetId = CurrentPlanetId;
+				if(!string.IsNullOrEmpty(currentPlanetId)) {
+					foreach(Planet p in this.CachedPlanetList) {
+						if(p.Id == currentPlanetId)	{
+							return p;	
+						}
 					}
 				}
-				
+
 				return null;
 			}
 		}
