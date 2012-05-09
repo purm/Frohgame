@@ -23,7 +23,14 @@ namespace Frohgame.Core
         #region Private Fields
 
 		StringManager _stringManager;
-		
+		public StringManager StringManager {
+			get {
+				return this._stringManager;
+			}
+			set {
+				_stringManager = value;
+			}
+		}		
         #endregion
 
         #region Properties
@@ -42,7 +49,7 @@ namespace Frohgame.Core
 				if(refresh)
 					NavigateToIndexPage(IndexPages.Overview);
 				
-				HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
+				HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(this.StringManager.IsLoggedinXPath);
 				if(node == null)
 					return false;
 					
@@ -86,7 +93,7 @@ namespace Frohgame.Core
 					throw new Frohgame.Core.NoCacheDataException("AccountCache.LastIndexPageParser == null");	
 				}
 				
-				HtmlAgilityPack.HtmlNode span = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.UnreadMessageCountXPath);
+				HtmlAgilityPack.HtmlNode span = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(this.StringManager.UnreadMessageCountXPath);
 				if(span == null) {
 					throw new ParsingException("UnreadMessagesCount: Span-Knoten wurde nicht gefunden");
 				}
@@ -134,7 +141,25 @@ namespace Frohgame.Core
 		/// </summary>
 		public string Version {
 			get {
-				string version = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.VersionRegex).Attributes["content"].Value;
+				if(AccountCache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("AccountCache.lastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(this.StringManager.VersionXPath);
+				if(node == null) {
+					throw new ParsingException("Version: Meta-Knoten konnte nicht gefunden werden");
+				}
+				
+				HtmlAgilityPack.HtmlAttribute content = node.Attributes["content"];
+				if(content == null) {
+					throw new ParsingException("Version: Content-Attribut im Meta-Knoten konnte nicht gefunden werden");	
+				}
+				
+				string version = content.Value;
+				if(string.IsNullOrEmpty(version)) {
+					throw new ParsingException("Version: Content-Attribut in Meta-Knoten ist leer");	
+				}
+				
 				Logger.Log (LoggingCategories.Parse, "Version: " + version);
 				return version;
 			}
