@@ -329,7 +329,7 @@ namespace Frohgame.Core
 			this._userName = name;
 			this._userPassword = password;
 
-			_stringManager = new StringManager (this._userName, this._userPassword, this._server);
+			this.StringManager = new StringManager (this._userName, this._userPassword, this._server);
 		}
 		
         #endregion
@@ -340,10 +340,10 @@ namespace Frohgame.Core
 		/// Navigiert zu einer Ogame-Standard Seite
 		/// </summary>
 		/// <param name="page">Ogame-Standard Seite</param>
-		public HttpResult NavigateToIndexPage (IndexPages page)
+		public HttpResult NavigateToIndexPage(IndexPages page)
 		{
-			Logger.Log (LoggingCategories.NavigationAction, "NavigateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
-			HttpResult tmp = HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
+			Logger.Log (LoggingCategories.NavigationAction, "NavigateToIndexPage(" + this.StringManager.IndexPageNames [page] + ")");
+			HttpResult tmp = HttpHandler.Get(this.StringManager.GetIndexPageUrl(page));
 			this.AccountCache.LastIndexPageResult = tmp;
 			
 			if(!this.IsLoggedIn(false)) {
@@ -362,17 +362,17 @@ namespace Frohgame.Core
 		/// <summary>
 		/// Versucht sich einzuloggen
 		/// </summary>
-		public void Login ()
+		public void Login()
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "Login");
 			//Zur Ogame Startseite navigieren
 			Logger.Log (LoggingCategories.NavigationAction, "Navigate to Startpage");
 
-			HttpHandler.Get (_stringManager.StartUrl);
+			HttpHandler.Get(this.StringManager.StartUrl);
 
 			//Logindaten senden^^
 			Logger.Log (LoggingCategories.NavigationAction, "Sending Login Data");
-			HttpResult tmp = HttpHandler.Post (_stringManager.LoginUrl, _stringManager.LoginParameter);
+			HttpResult tmp = HttpHandler.Post(this.StringManager.LoginUrl, this.StringManager.LoginParameter);
 			
 			this.AccountCache.LastIndexPageResult = tmp;
 			
@@ -393,11 +393,11 @@ namespace Frohgame.Core
 		/// Versucht ein Gebäude auf dem aktuell-angewählten Planeten auszubauen
 		/// </summary>
 		/// <param name="building">gebäude id</param>
-		public void UpgradeBuilding (SupplyBuildings building)
+		public void UpgradeBuilding(SupplyBuildings building)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
+			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != this.StringManager.GetIndexPageUrl (IndexPages.Resources)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NavigateToIndexPage (IndexPages.Resources);
 			} else {
@@ -424,18 +424,18 @@ namespace Frohgame.Core
 			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
-			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Resources), _stringManager.GetUpgradeBuildingSubmitParameter (this.SupplyToken, building));
+			HttpHandler.Post (this.StringManager.GetIndexPageUrl(IndexPages.Resources), this.StringManager.GetUpgradeBuildingSubmitParameter(this.SupplyToken, building));
 		}
 
 		/// <summary>
 		/// Versucht ein Gebäude auf dem aktuell-angewählten Planeten auszubauen
 		/// </summary>
 		/// <param name="building">gebäude id</param>
-		public void UpgradeBuilding (StationBuildings building)
+		public void UpgradeBuilding(StationBuildings building)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding(" + building.ToString () + ")");
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
+			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != this.StringManager.GetIndexPageUrl (IndexPages.Station)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NavigateToIndexPage (IndexPages.Station);
 			} else {
@@ -461,7 +461,7 @@ namespace Frohgame.Core
 			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
-			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Station), _stringManager.GetUpgradeBuildingSubmitParameter (this.StationToken, building));
+			HttpHandler.Post(this.StringManager.GetIndexPageUrl(IndexPages.Station), this.StringManager.GetUpgradeBuildingSubmitParameter(this.StationToken, building));
 		}
 
         #endregion
@@ -474,10 +474,10 @@ namespace Frohgame.Core
 		/// <param name="ajaxIndex">immer 1 setzen vorerst (nochnicht herrausgefunden, was der parameter bringt)</param>
 		/// <param name="ajaxParam">gebäude id</param>
 		/// <returns>Http Ergebnis</returns>
-		HttpResult NavigateBuildingAjax (int ajaxIndex, SupplyBuildings ajaxParam)
+		HttpResult NavigateBuildingAjax(int ajaxIndex, SupplyBuildings ajaxParam)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NavigateBuildingAjax(" + ajaxIndex.ToString () + ", " + ajaxParam.ToString () + ")");
-			return this._httpHandler.Post (_stringManager.GetAjaxUrl (_stringManager.IndexPageNames [IndexPages.Resources], ajaxIndex), _stringManager.GetAjaxParameter (ajaxParam));
+			return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Resources], ajaxIndex), this.StringManager.GetAjaxParameter(ajaxParam));
 		}
 
 		/// <summary>
@@ -486,10 +486,10 @@ namespace Frohgame.Core
 		/// <param name="ajaxIndex">immer 1 setzen vorerst (nochnicht herrausgefunden, was der parameter bringt)</param>
 		/// <param name="ajaxParam">gebäude id</param>
 		/// <returns>Http Ergebnis</returns>
-		HttpResult NavigateBuildingAjax (int ajaxIndex, StationBuildings ajaxParam)
+		HttpResult NavigateBuildingAjax(int ajaxIndex, StationBuildings ajaxParam)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NavigateBuildingAjax(" + ajaxIndex.ToString () + ", " + ajaxParam.ToString () + ")");
-			return this._httpHandler.Post (_stringManager.GetAjaxUrl (_stringManager.IndexPageNames [IndexPages.Station], ajaxIndex), _stringManager.GetAjaxParameter (ajaxParam));
+			return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Station], ajaxIndex), this.StringManager.GetAjaxParameter(ajaxParam));
 		}
 
 		/// <summary>
@@ -497,9 +497,9 @@ namespace Frohgame.Core
 		/// </summary>
 		/// <param name="ajaxHTML">Quelltext</param>
 		/// <returns>Level</returns>
-		private int GetBuildingLevelFromAjax (HtmlAgilityPack.HtmlDocument ajaxHTML)
+		private int GetBuildingLevelFromAjax(HtmlAgilityPack.HtmlDocument ajaxHTML)
 		{
-			int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (ajaxHTML.DocumentNode.SelectSingleNode (_stringManager.BuildCurLevelXPath).InnerText);
+			int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus(ajaxHTML.DocumentNode.SelectSingleNode(this.StringManager.BuildCurLevelXPath).InnerText);
 			Logger.Log (LoggingCategories.Parse, "GetBuildingLevelFromAjax: " + Result.ToString ());
 			return Result;
 		}
@@ -509,9 +509,9 @@ namespace Frohgame.Core
 		/// </summary>
 		/// <param name="ajaxHTML">Quelltext</param>
 		/// <returns>Metal or 0 </returns>
-		private int GetMetalFromAjax (string ajaxHTML)
+		private int GetMetalFromAjax(string ajaxHTML)
 		{
-			string tmp = Utils.SimpleRegex (ajaxHTML, _stringManager.NeededMetalRegex);
+			string tmp = Utils.SimpleRegex(ajaxHTML, this.StringManager.NeededMetalRegex);
 			int Result = 0;
 			if (!string.IsNullOrEmpty (tmp)) {
 				Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
@@ -526,9 +526,9 @@ namespace Frohgame.Core
 		/// </summary>
 		/// <param name="ajaxHTML">Quelltext</param>
 		/// <returns>Crystal or 0 </returns>
-		private int GetCrystalFromAjax (string ajaxHTML)
+		private int GetCrystalFromAjax(string ajaxHTML)
 		{
-			string tmp = Utils.SimpleRegex (ajaxHTML, _stringManager.NeededCrystalRegex);
+			string tmp = Utils.SimpleRegex(ajaxHTML, this.StringManager.NeededCrystalRegex);
 			int Result = 0;
 			if (!string.IsNullOrEmpty (tmp)) {
 				Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
@@ -543,9 +543,9 @@ namespace Frohgame.Core
 		/// </summary>
 		/// <param name="ajaxHTML">Quelltext</param>
 		/// <returns>Deuterium or 0 </returns>
-		private int GetDeuteriumFromAjax (string ajaxHTML)
+		private int GetDeuteriumFromAjax(string ajaxHTML)
 		{
-			string tmp = Utils.SimpleRegex (ajaxHTML, _stringManager.NeededDeuteriumRegex);
+			string tmp = Utils.SimpleRegex(ajaxHTML, this.StringManager.NeededDeuteriumRegex);
 			int Result = 0;
 			if (!string.IsNullOrEmpty (tmp)) {
 				Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (tmp);
@@ -576,10 +576,10 @@ namespace Frohgame.Core
 		public List<Planet> PlanetList {
 			get {
 				List<Planet> ret = new List<Planet> ();
-				HtmlAgilityPack.HtmlNodeCollection planetNodes = this.AccountCache.LastIndexPageParser.DocumentNode.SelectNodes (_stringManager.PlanetListXPath);
+				HtmlAgilityPack.HtmlNodeCollection planetNodes = this.AccountCache.LastIndexPageParser.DocumentNode.SelectNodes (this.StringManager.PlanetListXPath);
 
 				foreach (HtmlAgilityPack.HtmlNode planetNode in planetNodes) {
-					ret.Add (new Planet (planetNode, _stringManager, Logger));
+					ret.Add(new Planet (planetNode, this.StringManager, Logger));
 				}
 
 				return ret;
@@ -593,7 +593,7 @@ namespace Frohgame.Core
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
 		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
-			HttpResult tmp = this.HttpHandler.Get(_stringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
+			HttpResult tmp = this.HttpHandler.Get(this.StringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
 			this.AccountCache.LastIndexPageResult = tmp;
 			
 			if(!this.IsLoggedIn(false)) {
