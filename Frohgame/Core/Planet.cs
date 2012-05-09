@@ -56,8 +56,27 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Metal {
 			get {
-				string metalString = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.MetalXPath).InnerText;
-				int Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (metalString);
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode spanNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (this._stringManager.MetalXPath);
+				if(spanNode == null) {
+					throw new ParsingException("Metal: span-Knoten nicht gefunden");
+				}
+				
+				string metalString = spanNode.InnerText;
+				if(string.IsNullOrEmpty(metalString)) {
+					throw new ParsingException("Metal: span-Knoten Inhalt ist leer");	
+				}
+				
+				int Result;
+				try {
+					Result = Utils.StringReplaceToInt32WithoutPlusAndMinus (metalString);
+				} catch (FormatException) {
+					throw new ParsingException("Metal: span-Knoten Inhalt ist keine Zahl");	
+				}
+				
 				_logger.Log (LoggingCategories.Parse, "Metal: " + Result.ToString ());
 				return Result;
 			}
