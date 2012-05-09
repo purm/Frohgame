@@ -22,7 +22,7 @@ namespace Frohgame.Core
 	{
         #region Private Fields
 
-		StringManager _stringManager;//test
+		StringManager _stringManager;
 		
         #endregion
 
@@ -40,7 +40,7 @@ namespace Frohgame.Core
 		public bool IsLoggedIn(bool refresh) {
 			try {
 				if(refresh)
-					NagivateToIndexPage(IndexPages.Overview);
+					NavigateToIndexPage(IndexPages.Overview);
 				
 				HtmlAgilityPack.HtmlNode node = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.IsLoggedinXPath);
 				if(node == null)
@@ -75,6 +75,24 @@ namespace Frohgame.Core
 		public Logger Logger {
 			get { return _logger; }
 			set { _logger = value; }
+		}
+		
+		/// <summary>
+		/// Anzahl der ungelesenen Nachrichten
+		/// </summary>
+		public int UnreadMessagesCount {
+			get {
+				if(AccountCache.LastIndexPageParser == null) {
+					throw new Frohgame.Core.NoCacheDataException("AccountCache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode span = AccountCache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.UnreadMessageCountXPath);
+				if(span == null) {
+					throw new ParsingException("UnreadMessagesCount: Span-Knoten wurde nicht gefunden");
+				}
+				
+				return Utils.StringReplaceToInt32WithoutPlusAndMinus(span.InnerText);
+			}
 		}
 		
 		Frohgame.FrohgameCache _accountCache = new Frohgame.FrohgameCache();
@@ -221,9 +239,9 @@ namespace Frohgame.Core
 		/// Navigiert zu einer Ogame-Standard Seite
 		/// </summary>
 		/// <param name="page">Ogame-Standard Seite</param>
-		public HttpResult NagivateToIndexPage (IndexPages page)
+		public HttpResult NavigateToIndexPage (IndexPages page)
 		{
-			Logger.Log (LoggingCategories.NavigationAction, "NagivateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
+			Logger.Log (LoggingCategories.NavigationAction, "NavigateToIndexPage(" + _stringManager.IndexPageNames [page] + ")");
 			HttpResult tmp = HttpHandler.Get(this._stringManager.GetIndexPageUrl (page));
 			this.AccountCache.LastIndexPageResult = tmp;
 			
@@ -280,7 +298,7 @@ namespace Frohgame.Core
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
 			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Resources)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
-				NagivateToIndexPage (IndexPages.Resources);
+				NavigateToIndexPage (IndexPages.Resources);
 			} else {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind bereits auf der Bau-Seite");
 			}
@@ -318,7 +336,7 @@ namespace Frohgame.Core
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
 			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != _stringManager.GetIndexPageUrl (IndexPages.Station)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
-				NagivateToIndexPage (IndexPages.Station);
+				NavigateToIndexPage (IndexPages.Station);
 			} else {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind bereits auf der Bau-Seite");
 			}
@@ -499,65 +517,14 @@ namespace Frohgame.Core
 		/// Dateipfad
 		/// </param>
 		public void Serialize(string path, bool encrypt) {
-			FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-			BinaryFormatter formatter =  new BinaryFormatter();
-			if(encrypt) {
-				RijndaelManaged RMCrypto = new RijndaelManaged();
-				byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
-				byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
-				
-				byte[] iv = Utils.Combine(ivv, ivv);
-				
-				RMCrypto.BlockSize = 128;
-				RMCrypto.KeySize = 128;
-				RMCrypto.IV = iv;
-	
-				RMCrypto.Key = hwID;
-				
-				CryptoStream crStream = new CryptoStream(stream,
-	   				RMCrypto.CreateEncryptor(), CryptoStreamMode.Write);
-	
-				formatter.Serialize(crStream, this);
-	
-				crStream.Close();
-			}
-			else {
-				formatter.Serialize(stream, this);
-			}
-			stream.Close();
+			Utils.Serialize(this, path, encrypt);
 		}
 		
 		/// <summary>
 		/// Lädt eine Session aus einer Datei
 		/// </summary>
-		public static FrohgameSession Deserialize(string path, bool encrypted) {
-			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-			BinaryFormatter formatter =  new BinaryFormatter();
-			object obj;
-			if(encrypted) {
-				RijndaelManaged RMCrypto = new RijndaelManaged();
-				byte[] hwID = Utils.StringToByteArray(Utils.GetMD5Hash(Utils.HardwareID));
-				byte[] ivv = Utils.IntToByteArray(Utils.GetHashCodeInt64(Utils.HardwareID));
-				
-				byte[] iv = Utils.Combine(ivv, ivv);
-				
-				RMCrypto.BlockSize = 128;
-				RMCrypto.KeySize = 128;
-				RMCrypto.IV = iv;
-				RMCrypto.Key = hwID;
-				
-				CryptoStream crStream = new CryptoStream(stream,
-				    RMCrypto.CreateDecryptor(), CryptoStreamMode.Read);
-				
-				obj = formatter.Deserialize(crStream);
-			}
-			else {
-				obj = formatter.Deserialize(stream);
-			}
-			
-			stream.Close();
-			
-			return (FrohgameSession)obj;
+		public static FrohgameSession Deserialize(string path, bool encrypted) {	
+			return (FrohgameSession)Utils.Deserialize(path, encrypted);
 		}
 		
 		#endregion

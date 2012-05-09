@@ -242,7 +242,16 @@ namespace Frohgame
 				return "//span[@id='resources_energy']";
 			}
 		}
-
+		
+		/// <summary>
+		/// Xpath zum auslesen der Anzahl der ungelesenen Messages
+		/// </summary>
+		internal string UnreadMessageCountXPath {
+			get {
+				return "//a[@id='message_alert_box']/span";	
+			}
+		}
+		
         #endregion
 
 		/// <summary>
@@ -379,6 +388,7 @@ namespace Frohgame
 			_indexPageNames.Add (IndexPages.Shipyard, "shipyard");
 			_indexPageNames.Add (IndexPages.Station, "station");
 			_indexPageNames.Add (IndexPages.Trader, "traderOverview");
+			_indexPageNames.Add (IndexPages.Messages, "messages");
 		}
 
         #endregion

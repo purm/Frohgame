@@ -81,16 +81,6 @@ namespace FrohgameTestApp
 					Console.WriteLine ("PLANET: " + p.Name + " - " + p.Id + " - [" + p.Coords.Galaxy.ToString () + ":" + p.Coords.SunSystem.ToString () + ":" + p.Coords.Place.ToString () + "]");
 				}
 	
-				//Zeit bis xx Metall:
-				string time = Frohgame.Core.Mathemathics.CalcMaxTimeForRes (
-	                session.CurrentPlanet.Metal,
-	                session.CurrentPlanet.Crystal,
-	                session.CurrentPlanet.Deuterium,
-	                2000, 0, 0,
-	                session.CurrentPlanet.MetalPerHour,
-	                session.CurrentPlanet.CrystalPerHour,
-	                session.CurrentPlanet.DeuteriumPerHour).ToString ();
-	
 				//int time = FROHGAME.Core.Mathemathics.CalcTimeForRes(100000, session.Metal, session.MetalPerHour);
 	
 				//TEST:
@@ -110,7 +100,7 @@ namespace FrohgameTestApp
 //					
 //				}
 	
-				Console.WriteLine ("TIME: " + time);
+				Console.WriteLine("UNgelesene Nachrichten: " + session.UnreadMessagesCount);
 	        
 				System.Collections.Generic.Dictionary<Frohgame.Core.StationBuildings, int> levels; 
 				
@@ -118,7 +108,7 @@ namespace FrohgameTestApp
 					levels = session.CurrentPlanet.StationBuildingLevels;	
 				} catch(Frohgame.Core.NoCacheDataException ex) {
 					Console.WriteLine("NoCacheDataException: " + ex.Message);
-					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Station);
+					session.NavigateToIndexPage(Frohgame.Core.IndexPages.Station);
 					levels = session.CurrentPlanet.StationBuildingLevels;
 				}
 				
@@ -130,7 +120,7 @@ namespace FrohgameTestApp
 					levels2 = session.CurrentPlanet.ResearchLevels;	
 				} catch(Frohgame.Core.NoCacheDataException ex) {
 					Console.WriteLine("NoCacheDataException: " + ex.Message);
-					session.NagivateToIndexPage(Frohgame.Core.IndexPages.Research);
+					session.NavigateToIndexPage(Frohgame.Core.IndexPages.Research);
 					levels2 = session.CurrentPlanet.ResearchLevels;
 				}
 				

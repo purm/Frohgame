@@ -85,7 +85,9 @@ namespace Frohgame.Core {
         Galaxy,
         Alliance,
         Premium,
-        Changelog
+        Changelog,
+		Messages,
+		Count = 14
     }
 
     public enum LoggingCategories {

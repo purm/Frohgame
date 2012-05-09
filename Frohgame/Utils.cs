@@ -8,6 +8,7 @@ using System.Management;
 using Frohgame.Core;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using System.Runtime.Serialization.Formatters.Binary;
 
 /*
  * 
@@ -194,10 +195,10 @@ namespace Frohgame
 		//From http://stackoverflow.com/questions/8820399/c-sharp-4-0-how-to-get-64-bit-hash-code-of-given-string
 		public static long GetHashCodeInt64(string input)
 		{
-		    var s1 = input.Substring(0, input.Length / 2);
-		    var s2 = input.Substring(input.Length / 2);
+		    string s1 = input.Substring(0, input.Length / 2);
+		    string s2 = input.Substring(input.Length / 2);
 		
-		    var x= ((long)s1.GetHashCode()) << 0x20 | s2.GetHashCode();
+		    long x= ((long)s1.GetHashCode()) << 0x20 | s2.GetHashCode();
 		
 		    return x;
 		}
@@ -221,5 +222,40 @@ namespace Frohgame
 	        }
 	        return rv;
 	    }
+		
+		/// <summary>
+		/// Speichert ein Objekt
+		/// </summary>
+		public static void Serialize(object obj, string path, bool encrypt) {
+			FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+			BinaryFormatter formatter =  new BinaryFormatter();
+			if(encrypt) {
+				//TODO...
+			}
+			else {
+				formatter.Serialize(stream, obj);
+			}
+			stream.Close();
+		}
+		
+		/// <summary>
+		/// Lädt ein Object
+		/// </summary>
+		public static object Deserialize(string path, bool encrypted) {
+			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+			BinaryFormatter formatter =  new BinaryFormatter();
+			object obj;
+			if(encrypted) {
+				//TODO...
+				obj = null;
+			}
+			else {
+				obj = formatter.Deserialize(stream);
+			}
+			
+			stream.Close();
+			
+			return obj;
+		}
 	}
 }
