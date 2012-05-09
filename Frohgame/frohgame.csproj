@@ -44,7 +44,6 @@
     <Compile Include="Core\FrohgameEnums.cs" />
     <Compile Include="Core\FrohgameExceptions.cs" />
     <Compile Include="Core\FrohgameSession.cs" />
-    <Compile Include="Core\Planet.cs" />
     <Compile Include="Http\HttpHandler.cs" />
     <Compile Include="Http\HttpResult.cs" />
     <Compile Include="Logger.cs" />
@@ -53,6 +52,7 @@
     <Compile Include="Core\Mathematics\MathRes.cs" />
     <Compile Include="Core\Mathematics\MathFleet.cs" />
     <Compile Include="Core\FrohgameCache.cs" />
+    <Compile Include="Core\FrohgamePlanet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
