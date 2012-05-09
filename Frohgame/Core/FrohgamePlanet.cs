@@ -549,7 +549,6 @@ namespace Frohgame.Core
 			if(moonNode != null) {
 				string linkToMoon = moonNode.Attributes["href"].Value;
 				this._moonId = Utils.ReplaceEverythingsExceptNumbers(Utils.SimpleRegex(linkToMoon, strings.MoonOrPlanetIDRegex));
-				Console.WriteLine("There is a moon, buddy and his id is: " + _moonId.ToString());
 			}
 			else {
 				this._moonId = string.Empty;	
