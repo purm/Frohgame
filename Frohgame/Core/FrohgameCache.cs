@@ -15,7 +15,7 @@ namespace Frohgame
 //			this._lastIndexPagesResults = new ObservableCollection<HttpResult>();			
 			this.LastIndexPagesResults.CollectionChanged += HandleLastIndexPagesResultshandleCollectionChanged;
 			
-			for(int i = 0; i < IndexPages.Count; i++) {
+			for(int i = 0; i < (int)IndexPages.Count; i++) {
 				LastIndexPagesParsers.Add(null);
 				LastIndexPagesResults.Add(null);
 			}
@@ -141,7 +141,7 @@ namespace Frohgame
 				if(this._lastIndexPagesParsers == null) {
 					this._lastIndexPagesParsers = new ObservableCollection<HtmlAgilityPack.HtmlDocument>();
 					
-					for(int i = 0; i < IndexPages.Count; i++) {
+					for(int i = 0; i < (int)IndexPages.Count; i++) {
 						_lastIndexPagesParsers.Add(null);
 					}
 					
