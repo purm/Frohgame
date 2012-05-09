@@ -10,6 +10,12 @@ using System.Text;
  */
 
 namespace Frohgame.Core {
+	public class GeneralFrohgameException : Exception {
+		public GeneralFrohgameException(string message)
+			: base(message) {
+		}
+	}
+	
     public class NotEnoughMetalException : Exception {
         public NotEnoughMetalException(string message)
             : base(message) {
