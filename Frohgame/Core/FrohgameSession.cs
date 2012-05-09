@@ -164,17 +164,55 @@ namespace Frohgame.Core
 				return version;
 			}
 		}
-
+		
 		/// <summary>
-		/// Token, welches unter anderem beim Bau von Gebäuden benötigt wird
-		/// Gibt nur etwas zurück, wenn _lastResult == der resourcenPage oder der stationPage ist
+		/// Token, welches beim Bau von Station-Gebäuden gebraucht wird
 		/// </summary>
-		public string Token {
+		public string StationToken {
 			get {
-				string token = this.CurrentPlanet.Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.TokenXPath).Attributes ["value"].Value;
-				Logger.Log (LoggingCategories.Parse, "Token: " + (!string.IsNullOrEmpty (token) ? token : "None"));
-				return token;
+				return GetToken(IndexPages.Station);	
 			}
+		}
+		
+		/// <summary>
+		/// Token, welches beim Bau von Supply-Gebäuden gebraucht wird
+		/// </summary>
+		public string SupplyToken {
+			get {
+				return GetToken(IndexPages.Resources);	
+			}
+		}
+		
+		/// <summary>
+		/// Token, welches beim Bau von Gebäuden gebraucht wird
+		/// </summary>
+		string GetToken(IndexPages page) {
+			Planet currentPlanet = this.CurrentPlanet;
+			if(currentPlanet == null) {
+				throw new GeneralFrohgameException("currentPlanet == null");
+			}
+			
+			if(currentPlanet.Cache.LastIndexPagesParsers[(int)page] == null) {
+				throw new NoCacheDataException("CurrentPlanet.Cache.LastIndexPagesParsers[IndexPages." + page.ToString() + "] == null");
+			}
+			
+			HtmlAgilityPack.HtmlNode inputNode = currentPlanet.Cache.LastIndexPagesParsers[(int)page].DocumentNode.SelectSingleNode(this.StringManager.TokenXPath);
+			if(inputNode == null) {
+				throw new ParsingException("StationToken: Input-Knoten konnte nicht gefunden werden");
+			}
+			
+			HtmlAgilityPack.HtmlAttribute valueAttribute = inputNode.Attributes ["value"];
+			if(valueAttribute == null) {
+				throw new ParsingException("StationToken: value-Attribut vom Input-Knoten konnte nicht gefunden werden");	
+			}
+			
+			string token = valueAttribute.Value;
+			if(string.IsNullOrEmpty(token)) {
+				throw new ParsingException("StationToken: value-Attribut vom Input-Knoten ist leer");
+			}
+			
+			Logger.Log (LoggingCategories.Parse, "Token: " + token);
+			return token;
 		}
 		
 		/// <summary>
@@ -348,7 +386,7 @@ namespace Frohgame.Core
 			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
-			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Resources), _stringManager.GetUpgradeBuildingSubmitParameter (this.Token, building));
+			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Resources), _stringManager.GetUpgradeBuildingSubmitParameter (this.SupplyToken, building));
 		}
 
 		/// <summary>
@@ -385,7 +423,7 @@ namespace Frohgame.Core
 			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
-			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Station), _stringManager.GetUpgradeBuildingSubmitParameter (this.Token, building));
+			HttpHandler.Post (_stringManager.GetIndexPageUrl (IndexPages.Station), _stringManager.GetUpgradeBuildingSubmitParameter (this.StationToken, building));
 		}
 
         #endregion
