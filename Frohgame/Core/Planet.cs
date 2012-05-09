@@ -266,7 +266,20 @@ namespace Frohgame.Core
 		/// </summary>
 		public int Energy {
 			get {
-				string tmp = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode (_stringManager.EnergyXPath).InnerText;
+				if(Cache.LastIndexPageParser == null) {
+					throw new NoCacheDataException("Cache.LastIndexPageParser == null");	
+				}
+				
+				HtmlAgilityPack.HtmlNode spanNode = Cache.LastIndexPageParser.DocumentNode.SelectSingleNode(_stringManager.EnergyXPath);
+				if(spanNode == null) {
+					throw new ParsingException("Energy: span-Knoten konnte nicht gefunden werden");	
+				}
+				
+				string tmp = spanNode.InnerText;
+				if(string.IsNullOrEmpty(tmp)) {
+					throw new ParsingException("Energy: span-Knoten Inhalt ist leer");
+				}
+				
 				int Result = Utils.StringReplaceToInt32 (tmp);
 				_logger.Log (LoggingCategories.Parse, "Energy: " + Result.ToString ());
 				return Result;
