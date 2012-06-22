@@ -5,3 +5,5 @@ obj
 TestResults
 /*.userprefs
 bin/*
+
+*.suo

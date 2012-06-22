@@ -386,7 +386,7 @@ namespace Frohgame.Core
 			this.AccountCache.LastIndexPageResult = tmp;
 			
 			if(!this.IsLoggedIn(false)) {
-				throw new LoginFailedException ("Login failed (LogoutRegex) not found");
+				throw new LoginFailedException ("Login failed (LogoutRegex not found)");
 			}
 			
 			this.AccountCache.LastPageResult = tmp;
