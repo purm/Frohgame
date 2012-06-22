@@ -106,7 +106,8 @@ namespace Frohgame.Core
 				try {
 					return Utils.StringReplaceToInt32WithoutPlusAndMinus(span.InnerText);
 				} catch(FormatException) {
-					throw new ParsingException("UnreadMessagesCount: Span-Knoten Inhalt ist keine Zahl");
+					//throw new ParsingException("UnreadMessagesCount: Span-Knoten Inhalt ist keine Zahl");
+                    return 0;
 				}
 			}
 		}

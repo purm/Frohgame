@@ -248,7 +248,7 @@ namespace Frohgame
 		/// </summary>
 		internal string UnreadMessageCountXPath {
 			get {
-				return "//a[@id='message_alert_box']/span";	
+				return "//a[@id='message_alert_box' or @id='message_alert_box_default']/span";	
 			}
 		}
 		
