@@ -48,47 +48,6 @@ namespace Frohgame
 			}
 		}
 
-		string _server;
-		/// <summary>
-		/// Serverstring
-		/// </summary>
-		public string Server {
-			get { return _server; }
-			set {
-				_server = value;
-
-				//Topleveldomain setzen^^
-				string[] serverSplitted = _server.Split ('.');
-				this._tldDomain = serverSplitted [serverSplitted.Length - 1];
-			}
-		}
-
-		string _name;
-		/// <summary>
-		/// Benutzername
-		/// </summary>
-		public string Name {
-			get { return _name; }
-			set { _name = value; }
-		}
-
-		string _password;
-		/// <summary>
-		/// Benutzerpasswort
-		/// </summary>
-		public string Password {
-			get { return _password; }
-			set { _password = value; }
-		}
-
-		string _tldDomain;
-		/// <summary>
-		/// Topleveldomain, z.B. "de" oder "com"
-		/// </summary>
-		public string TldDomain {
-			get { return _tldDomain; }
-		}
-
 		/// <summary>
 		/// String zum verifizieren, ob der Logout-Link gefunden werden kann
 		/// </summary>
@@ -101,28 +60,24 @@ namespace Frohgame
 		/// <summary>
 		/// Startpage Url
 		/// </summary>
-		internal string StartUrl {
-			get {
-				return String.Format (@"http://ogame.{0}", this._tldDomain);
-			}
+		internal string StartUrl(string server) {
+            string[] serverSplitted = server.Split ('.');
+			string tldDomain = serverSplitted [serverSplitted.Length - 1];
+            return String.Format(@"http://ogame.{0}", tldDomain);
 		}
 
 		/// <summary>
 		/// Login Url
 		/// </summary>
-		internal string LoginUrl {
-			get {
-				return String.Format (@"http://{0}/game/reg/login2.php", this._server);
-			}
+		internal string LoginUrl(string server) {
+			return String.Format (@"http://{0}/game/reg/login2.php", server);
 		}
 
 		/// <summary>
 		/// Login Post-Parameter
 		/// </summary>
-		internal string LoginParameter {
-			get {
-				return String.Format (@"v=2&is_utf8=0&uni_url={0}&login={1}&pass={2}", this._server, System.Web.HttpUtility.UrlEncode (this._name), System.Web.HttpUtility.UrlEncode (this._password));
-			}
+		internal string LoginParameter(string server, string name, string password) {
+			return String.Format (@"v=2&is_utf8=0&uni_url={0}&login={1}&pass={2}", server, System.Web.HttpUtility.UrlEncode(name), System.Web.HttpUtility.UrlEncode(password));
 		}
 
 		/// <summary>
@@ -369,12 +324,8 @@ namespace Frohgame
 
         #region Constructors
 
-		internal StringManager (string name, string password, string server)
+		internal StringManager ()
 		{
-			this.Server = server;
-			this._password = password;
-			this._name = name;
-
 			//Index-Page Namen festlegen
 			_indexPageNames.Add (IndexPages.Alliance, "alliance");
 			_indexPageNames.Add (IndexPages.Changelog, "changelog");
@@ -401,9 +352,9 @@ namespace Frohgame
 		/// <param name="currentPage">Index-Page</param>
 		/// <param name="ajaxIndex">Ajax id</param>
 		/// <returns>Url für Ajax Anfragen</returns>
-		internal string GetAjaxUrl (string currentPage, int ajaxIndex)
+		internal string GetAjaxUrl (string currentPage, int ajaxIndex, string server)
 		{
-			return String.Format (@"http://{0}/game/index.php?page={1}&ajax={2}", this._server, currentPage, ajaxIndex.ToString ());
+			return String.Format (@"http://{0}/game/index.php?page={1}&ajax={2}", server, currentPage, ajaxIndex.ToString ());
 		}
 
 		/// <summary>
@@ -431,9 +382,9 @@ namespace Frohgame
 		/// </summary>
 		/// <param name="page">Index-Page</param>
 		/// <returns>Url einer Index-Page</returns>
-		internal string GetIndexPageUrl (IndexPages page)
+		internal string GetIndexPageUrl (IndexPages page, string server)
 		{
-			return String.Format ("http://{0}/game/index.php?page={1}", Server, this._indexPageNames [page]);
+			return String.Format ("http://{0}/game/index.php?page={1}", server, this._indexPageNames [page]);
 		}
 
 		/// <summary>

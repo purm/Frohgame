@@ -75,9 +75,17 @@ namespace Frohgame.Core
 			set { _httpHandler = value; }
 		}
 
+        /// <summary>
+        /// Server on which the user plays
+        /// </summary>
+        public string Server {
+            get;
+            private set;
+        }
+
 		Logger _logger = new Logger ();
 		/// <summary>
-		/// Logging Klasse, Log-Ereignis kann abbonniert werden
+		/// Logging Handler, You can subscribe the logging events
 		/// </summary>
 		public Logger Logger {
 			get { return _logger; }
@@ -120,30 +128,6 @@ namespace Frohgame.Core
 			set {
 				_accountCache = value;
 			}
-		}
-		
-		string _userPassword;
-		/// <summary>
-		/// Passwort des Benutzers
-		/// </summary>
-		public string UserPassword {
-			get { return _userPassword; }
-		}
-
-		string _userName;
-		/// <summary>
-		/// Name des Benutzers
-		/// </summary>
-		public string UserName {
-			get { return _userName; }
-		}
-
-		string _server;
-		/// <summary>
-		/// Server auf dem der Benutzer spielt
-		/// </summary>
-		public string Server {
-			get { return _server; }
 		}
 
 		/// <summary>
@@ -308,12 +292,9 @@ namespace Frohgame.Core
 		/// <summary>
 		/// Erstellt eine neue FrohgameSession
 		/// </summary>
-		/// <param name="name">Username</param>
-		/// <param name="password">Userpass</param>
-		/// <param name="server">Server des users. example: "uni42.ogame.de"</param>
 		/// <param name="userAgent">Useragent, der beim Browser-Simulator verwendet werden soll</param>
-		public FrohgameSession (string name, string password, string server, string userAgent)
-            : this(name, password, server)
+		public FrohgameSession (string userAgent)
+            : this()
 		{
 			HttpHandler.UserAgent = userAgent;
 		}
@@ -321,25 +302,9 @@ namespace Frohgame.Core
 		/// <summary>
 		/// Erstellt eine neue FrohgameSession
 		/// </summary>
-		/// <param name="name">Username</param>
-		/// <param name="password">Userpass</param>
-		/// <param name="server">Server des users. example: "uni42.ogame.de"</param>
-		public FrohgameSession (string name, string password, string server)
+		public FrohgameSession()
 		{
-			if (string.IsNullOrEmpty (name))
-				throw new ArgumentNullException ("name");
-
-			if (string.IsNullOrEmpty (password))
-				throw new ArgumentNullException ("password");
-
-			if (string.IsNullOrEmpty (server))
-				throw new ArgumentNullException ("server");
-
-			this._server = server;
-			this._userName = name;
-			this._userPassword = password;
-
-			this.StringManager = new StringManager (this._userName, this._userPassword, this._server);
+			this.StringManager = new StringManager();
 		}
 		
         #endregion
@@ -353,7 +318,7 @@ namespace Frohgame.Core
 		public HttpResult NavigateToIndexPage(IndexPages page)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NavigateToIndexPage(" + this.StringManager.IndexPageNames [page] + ")");
-			HttpResult tmp = HttpHandler.Get(this.StringManager.GetIndexPageUrl(page));
+            HttpResult tmp = HttpHandler.Get(this.StringManager.GetIndexPageUrl(page, this.Server));
 			this.AccountCache.LastIndexPageResult = tmp;
 			
 			if(!this.IsLoggedIn(false)) {
@@ -372,17 +337,28 @@ namespace Frohgame.Core
 		/// <summary>
 		/// Versucht sich einzuloggen
 		/// </summary>
-		public void Login()
+        public void Login(string name, string password, string server)
 		{
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentNullException("password");
+
+            if (string.IsNullOrEmpty(server))
+                throw new ArgumentNullException("server");
+
+            this.Server = server;
+
 			Logger.Log (LoggingCategories.NavigationAction, "Login");
 			//Zur Ogame Startseite navigieren
 			Logger.Log (LoggingCategories.NavigationAction, "Navigate to Startpage");
 
-			HttpHandler.Get(this.StringManager.StartUrl);
+			HttpHandler.Get(this.StringManager.StartUrl(server));
 
 			//Logindaten senden^^
 			Logger.Log (LoggingCategories.NavigationAction, "Sending Login Data");
-			HttpResult tmp = HttpHandler.Post(this.StringManager.LoginUrl, this.StringManager.LoginParameter);
+			HttpResult tmp = HttpHandler.Post(this.StringManager.LoginUrl(server), this.StringManager.LoginParameter(server, name, password));
 			
 			this.AccountCache.LastIndexPageResult = tmp;
 			
@@ -410,7 +386,7 @@ namespace Frohgame.Core
 				throw new NoCacheDataException("AccountCache.LastIndexPageResult == null");
 			}
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != this.StringManager.GetIndexPageUrl (IndexPages.Resources)) {
+            if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString() != this.StringManager.GetIndexPageUrl(IndexPages.Resources, this.Server)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NavigateToIndexPage (IndexPages.Resources);
 			} else {
@@ -437,7 +413,7 @@ namespace Frohgame.Core
 			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
-			HttpHandler.Post (this.StringManager.GetIndexPageUrl(IndexPages.Resources), this.StringManager.GetUpgradeBuildingSubmitParameter(this.SupplyToken, building));
+            HttpHandler.Post(this.StringManager.GetIndexPageUrl(IndexPages.Resources, this.Server), this.StringManager.GetUpgradeBuildingSubmitParameter(this.SupplyToken, building));
 		}
 
 		/// <summary>
@@ -451,7 +427,7 @@ namespace Frohgame.Core
 				throw new NoCacheDataException("AccountCache.LastIndexPageResult == null");
 			}
 			//Falls Token nicht gefunden wird zur entsprechenden Seite navigieren
-			if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString () != this.StringManager.GetIndexPageUrl (IndexPages.Station)) {
+            if (this.AccountCache.LastIndexPageResult.ResponseUrl.ToString() != this.StringManager.GetIndexPageUrl(IndexPages.Station, this.Server)) {
 				Logger.Log (LoggingCategories.NavigationAction, "UpgradeBuilding: Wir sind noch nicht auf der Bau-Seite");
 				NavigateToIndexPage (IndexPages.Station);
 			} else {
@@ -477,7 +453,7 @@ namespace Frohgame.Core
 			} else if (this.CurrentPlanet.Deuterium < neededDeuterium) {
 				throw new NotEnoughDeuteriumException ("Nicht genug Deuterium zum bau von " + building.ToString ());
 			}
-			HttpHandler.Post(this.StringManager.GetIndexPageUrl(IndexPages.Station), this.StringManager.GetUpgradeBuildingSubmitParameter(this.StationToken, building));
+            HttpHandler.Post(this.StringManager.GetIndexPageUrl(IndexPages.Station, this.Server), this.StringManager.GetUpgradeBuildingSubmitParameter(this.StationToken, building));
 		}
 
         #endregion
@@ -493,7 +469,7 @@ namespace Frohgame.Core
 		HttpResult NavigateBuildingAjax(int ajaxIndex, SupplyBuildings ajaxParam)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NavigateBuildingAjax(" + ajaxIndex.ToString () + ", " + ajaxParam.ToString () + ")");
-			return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Resources], ajaxIndex), this.StringManager.GetAjaxParameter(ajaxParam));
+			return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Resources], ajaxIndex, this.Server), this.StringManager.GetAjaxParameter(ajaxParam));
 		}
 
 		/// <summary>
@@ -505,7 +481,7 @@ namespace Frohgame.Core
 		HttpResult NavigateBuildingAjax(int ajaxIndex, StationBuildings ajaxParam)
 		{
 			Logger.Log (LoggingCategories.NavigationAction, "NavigateBuildingAjax(" + ajaxIndex.ToString () + ", " + ajaxParam.ToString () + ")");
-			return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Station], ajaxIndex), this.StringManager.GetAjaxParameter(ajaxParam));
+            return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Station], ajaxIndex, this.Server), this.StringManager.GetAjaxParameter(ajaxParam));
 		}
 
 		/// <summary>
@@ -616,7 +592,7 @@ namespace Frohgame.Core
 		/// <returns>Planetname auf dem man sich nun Befindet</returns>
 		public void ChangeToPlanet (IndexPages page, Planet planet)
 		{
-			HttpResult tmp = this.HttpHandler.Get(this.StringManager.GetIndexPageUrl(page) + "&cp=" + planet.Id.ToString());
+            HttpResult tmp = this.HttpHandler.Get(this.StringManager.GetIndexPageUrl(page, this.Server) + "&cp=" + planet.Id.ToString());
 			this.AccountCache.LastIndexPageResult = tmp;
 			
 			if(!this.IsLoggedIn(false)) {

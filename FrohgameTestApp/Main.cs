@@ -42,7 +42,7 @@ namespace FrohgameTestApp
 			}
 			
 			if(session == null) {
-				session = new Frohgame.Core.FrohgameSession (accNode.Attributes ["name"].Value, accNode.Attributes ["password"].Value, accNode.Attributes ["server"].Value);	
+				session = new Frohgame.Core.FrohgameSession ();	
 			}
 			else {
 				Console.WriteLine("Session erfolgreich deserialisiert");
@@ -57,10 +57,10 @@ namespace FrohgameTestApp
 			
 			if(loadedSessionFromFile == true) {
 				if(!session.IsLoggedIn(true)) {
-					session.Login();
+                    session.Login(accNode.Attributes["name"].Value, accNode.Attributes["password"].Value, accNode.Attributes["server"].Value);
 				}
 			} else {
-				session.Login();	
+                session.Login(accNode.Attributes["name"].Value, accNode.Attributes["password"].Value, accNode.Attributes["server"].Value);	
 			}
 			
 			try {
