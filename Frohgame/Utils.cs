@@ -9,6 +9,7 @@ using Frohgame.Core;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 
 /*
  * 
@@ -222,40 +223,39 @@ namespace Frohgame
 	        }
 	        return rv;
 	    }
-		
-		/// <summary>
-		/// Speichert ein Objekt
-		/// </summary>
-		public static void Serialize(object obj, string path, bool encrypt) {
-			FileStream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-			BinaryFormatter formatter =  new BinaryFormatter();
-			if(encrypt) {
-				//TODO...
-			}
-			else {
-				formatter.Serialize(stream, obj);
-			}
-			stream.Close();
-		}
-		
-		/// <summary>
-		/// Lädt ein Object
-		/// </summary>
-		public static object Deserialize(string path, bool encrypted) {
-			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-			BinaryFormatter formatter =  new BinaryFormatter();
-			object obj;
-			if(encrypted) {
-				//TODO...
-				obj = null;
-			}
-			else {
-				obj = formatter.Deserialize(stream);
-			}
-			
-			stream.Close();
-			
-			return obj;
-		}
+
+        /// <summary>
+        /// http://stackoverflow.com/a/10621042
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="obj"></param>
+        /// <param name="encryptionKey"></param>
+        public static void EncryptAndSerialize(string filename, object obj, string iv, string encryptionKey) {
+            var key = new DESCryptoServiceProvider();
+            var e = key.CreateEncryptor(Encoding.ASCII.GetBytes(iv), Encoding.ASCII.GetBytes(encryptionKey));
+            using (var fs = File.Open(filename, FileMode.Create)) {
+                using (var cs = new CryptoStream(fs, e, CryptoStreamMode.Write)) {
+                    new BinaryFormatter().Serialize(cs, obj);
+                }
+            }
+        }
+
+        /// <summary>
+        /// http://stackoverflow.com/a/10621042
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="encryptionKey"></param>
+        /// <returns></returns>
+        public static object DecryptAndDeserialize(string filename, string iv, string encryptionKey) {
+            var key = new DESCryptoServiceProvider();
+            var d = key.CreateDecryptor(Encoding.ASCII.GetBytes(iv), Encoding.ASCII.GetBytes(encryptionKey));
+            using (var fs = File.Open(filename, FileMode.Open)) {
+                using (var cs = new CryptoStream(fs, d, CryptoStreamMode.Read)) {
+                    object o = new BinaryFormatter().Deserialize(cs);
+
+                    return o;
+                }
+            }
+        }
 	}
 }

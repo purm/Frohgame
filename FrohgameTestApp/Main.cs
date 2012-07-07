@@ -28,7 +28,7 @@ namespace FrohgameTestApp
 			System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument ();
 			xmlDoc.Load ("AccountSchrott.xml");
 			System.Xml.XmlNode accNode = xmlDoc.SelectSingleNode ("//account[@name]");
-			//SCHROTT ENDE
+			
 			
 			
 			bool loadedSessionFromFile = false;
@@ -36,7 +36,7 @@ namespace FrohgameTestApp
 			if(File.Exists("session.dat")) {
 				Console.WriteLine("Session von Datei laden? (Yes/No)");
 				if(Console.ReadLine().ToUpper() == "YES") {
-					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat", false);
+					session = Frohgame.Core.FrohgameSession.Deserialize("session.dat", "a&md/1jA", "&mPmD8c!");
 					loadedSessionFromFile = true;
 				}
 			}
@@ -129,12 +129,14 @@ namespace FrohgameTestApp
 				} 
 			catch(Frohgame.Core.InvalidSessionException ex) {
 				Console.WriteLine("InvalidSessionException: " + ex.Message);
+
+                //SCHROTT ENDE
 			}
 			
 			
 			Console.WriteLine("Ende Gelände");
 			Console.ReadKey();
-			session.Serialize("session.dat", false);
+            session.Serialize("session.dat", "a&md/1jA", "&mPmD8c!");
 		}
 
 		static void HttpHandler_OnNavigating (string targetUrl, string post)

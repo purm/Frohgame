@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,6 +43,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Core\FrohgameEnums.cs" />
     <Compile Include="Core\FrohgameExceptions.cs" />
+    <Compile Include="Core\FrohgameMessage.cs" />
     <Compile Include="Core\FrohgameSession.cs" />
     <Compile Include="Http\HttpHandler.cs" />
     <Compile Include="Http\HttpResult.cs" />
@@ -55,9 +56,5 @@
     <Compile Include="Core\FrohgamePlanet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Core\" />
-    <Folder Include="Http\" />
-    <Folder Include="Core\Mathematics\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

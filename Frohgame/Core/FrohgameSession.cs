@@ -484,6 +484,18 @@ namespace Frohgame.Core
             return this._httpHandler.Post(this.StringManager.GetAjaxUrl(this.StringManager.IndexPageNames[IndexPages.Station], ajaxIndex, this.Server), this.StringManager.GetAjaxParameter(ajaxParam));
 		}
 
+        /// <summary>
+        /// Opens the Ajax of the message stuff
+        /// </summary>
+        /// <param name="ajaxIndex">everytime 1</param>
+        /// <param name="page">page</param>
+        /// <param name="category">category (every time 9)</param>
+        /// <returns>the http result</returns>
+        HttpResult NavigateMessageAjax(int ajaxIndex, int page, int categorie) {
+            Logger.Log(LoggingCategories.NavigationAction, "NavigateMessageAjax(" + ajaxIndex + ", " + page + ", " + categorie + ")");
+            return this._httpHandler.Post(this.StringManager.GetIndexPageUrl(IndexPages.Messages, this.Server), "displayCategory=" + categorie + "&displayPage=" + page + "&ajax=" + ajaxIndex);
+        }
+
 		/// <summary>
 		/// Liest Level eines Gebäudes aus 
 		/// </summary>
@@ -561,6 +573,16 @@ namespace Frohgame.Core
 				return _cachedPlanetList;
 			}
 		}
+
+        public List<FrohgameMessage> Messages {
+            get {
+                List<FrohgameMessage> ret = new List<FrohgameMessage>();
+
+                HttpResult ajaxHtml = NavigateMessageAjax(1, 1, 9);
+
+                return ret;
+            }
+        }
 		
 		/// <summary>
 		/// Lese Planeten aus und füge Sie in planetList ein 
@@ -616,15 +638,15 @@ namespace Frohgame.Core
 		/// <param name='path'>
 		/// Dateipfad
 		/// </param>
-		public void Serialize(string path, bool encrypt) {
-			Utils.Serialize(this, path, encrypt);
+		public void Serialize(string path, string iv, string key) {
+            Utils.EncryptAndSerialize(path, this, iv, key);
 		}
 		
 		/// <summary>
 		/// Lädt eine Session aus einer Datei
 		/// </summary>
-		public static FrohgameSession Deserialize(string path, bool encrypted) {	
-			return (FrohgameSession)Utils.Deserialize(path, encrypted);
+        public static FrohgameSession Deserialize(string path, string iv, string key) {
+            return (FrohgameSession)Utils.DecryptAndDeserialize(path, iv, key);
 		}
 		
 		#endregion
